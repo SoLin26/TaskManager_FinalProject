@@ -11,7 +11,7 @@ export default async function connect() {
   });
 
   // url
-  const url = process.env.MONGO_URL;
+  const url = process.env.MONGODB_URL;
   if (!url) {
     console.log("MONGO_URL for connection is missing!");
     process.exit();
