@@ -73,9 +73,19 @@ const TaskList = () => {
   return (
     <div>
       <h2>📋 Aufgabenliste</h2>
+      <li style={styles.card}>
+  <div style={styles.header}>
+    <span>{task.description}</span>
+    <span className="badge">{task.priority}</span>
+  </div>
+  <p>📅 {task.date}</p>
+  ...
+</li>
+
       {tasks.length === 0 ? (
         <p>Keine Aufgaben gefunden.</p>
       ) : (
+        
         <ul style={styles.list}>
           {tasks.map((task) => (
             <li key={task._id} style={styles.item}>
