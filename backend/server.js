@@ -1,8 +1,8 @@
-import express from "express";
+import express, { Router } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-
+import authenticateRoute from './routes/authenticateRoute.js'
 dotenv.config();
 
 const mongoURI = process.env.MONGODB_URI;
@@ -19,10 +19,11 @@ mongoose.connect(mongoURI, {
 });
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+
 
 // Simulierter Speicher für Aufgaben (später mit DB ersetzen)
 let tasks = [];
@@ -50,8 +51,14 @@ app.post("/api/tasks", (req, res) => {
   res.status(201).json({ message: "Aufgabe erfolgreich gespeichert!", task: newTask });
 });
 
+
+app.get( "/", (req, res) => {
+  res.send("Server is ready");
+});
+
+app.use("/user", authenticateRoute);
 // 🔵 GET /api/tasks
-app.get("/api/tasks", (req, res) => {
+app.get("/login", (req, res) => {
   res.json(tasks);
 });
 
