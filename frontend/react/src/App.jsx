@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Footer from "./components/Footer";
@@ -8,38 +8,60 @@ import TaskList from "./components/TaskList";
 import BackButton from "./components/BackButton";
 import TopNavBar from "./components/TopNavbar";
 import Dashboard from "./components/Dashboard";
+import LandingPage from "./components/LandingPage";
 import "./index.css";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // <--- Login-Zustand
 
   useEffect(() => {
     document.body.className = darkMode ? "dark" : "";
   }, [darkMode]);
 
-  return (
-    <Router>
-      <div className="app">
-        <TopNavBar />
-        <Header toggleDarkMode={() => setDarkMode(!darkMode)} />
+  // Layout für eingeloggte Benutzer
+  const LoggedInLayout = () => (
+    <div className="app">
+      <TopNavBar />
+      <Header toggleDarkMode={() => setDarkMode(!darkMode)} />
 
-        <div className="main-content">
-          <Sidebar />
-          <main className="content">
-            <BackButton />
-            
-            {/* ✅ ALLE Routen gehören hier rein */}
-            <Routes>
-              <Route path="/" element={<TaskForum />} />
-              <Route path="/tasks" element={<TaskList />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-            </Routes>
-          </main>
-        </div>
-
-        <Footer />
+      <div className="main-content">
+        <Sidebar />
+        <main className="content">
+          <BackButton />
+          <Routes>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/tasks" element={<TaskList />} />
+            <Route path="/forum" element={<TaskForum />} />
+            <Route path="*" element={<Navigate to="/dashboard" />} />
+          </Routes>
+        </main>
       </div>
-    </Router>
+
+      <Footer />
+    </div>
+  );
+
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={
+          isLoggedIn ? (
+            <Navigate to="/dashboard" />
+          ) : (
+            <LandingPage onLogin={() => setIsLoggedIn(true)} />
+          )
+        }
+      />
+      {/* Eingeloggte Benutzer */}
+      <Route
+        path="/*"
+        element={
+          isLoggedIn ? <LoggedInLayout /> : <Navigate to="/" />
+        }
+      />
+    </Routes>
   );
 }
 
