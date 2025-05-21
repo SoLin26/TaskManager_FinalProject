@@ -1,4 +1,5 @@
-import mongoose, { model} from 'mongoose';
+import mongoose, {model} from 'mongoose';
+import bcrypt from 'bcrypt';
 
 const { Schema } = mongoose
 
@@ -15,7 +16,12 @@ const addressSchema = new Schema({
 
 const userSchema = new Schema({
     userNumber : Number,
-    name:{
+    fullname:{
+        type:String,
+        required: true,
+       
+    },
+    username:{
         type:String,
         required: true,
        
@@ -49,3 +55,5 @@ const userSchema = new Schema({
 const User = model('User', userSchema);
 
 export default User
+
+
