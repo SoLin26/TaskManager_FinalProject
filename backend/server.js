@@ -2,8 +2,7 @@ import express, { Router } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import router from "./middleware/auth.js";
-
+import authenticateRoute from './routes/authenticateRoute.js'
 dotenv.config();
 
 const mongoURI = process.env.MONGODB_URI;
@@ -57,7 +56,7 @@ app.get( "/", (req, res) => {
   res.send("Server is ready");
 });
 
-app.use("/user", router);
+app.use("/user", authenticateRoute);
 // 🔵 GET /api/tasks
 app.get("/login", (req, res) => {
   res.json(tasks);
