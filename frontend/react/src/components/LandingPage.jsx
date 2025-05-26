@@ -16,7 +16,13 @@ function LandingPage({ onLogin }) {
           🔑 Login
         </button>
       </div>
-      <div className="top-bar-gray"></div>
+
+      <div className="top-bar-gray">
+        <a href="#features" className="features-link">✨ Funktionen</a>
+        <a href="#testimonials" className="features-link">✅ Nutzerstimmen</a>
+        <a href="#pricing" className="features-link">💰 Preise</a>
+        <a href="#faq" className="features-link">❓ FAQ</a>
+      </div>
 
       <div className="landing-wrapper">
         <div className="landing-content">
@@ -80,27 +86,30 @@ function LandingPage({ onLogin }) {
         </div>
       )}
 
-      {/* Neue Abschnitte beginnen hier */}
-
-      <div className="features-section">
+      {/* Funktionen */}
+      <div className="features-section" id="features">
         <h2>Funktionen von TaskHero</h2>
         <div className="features">
           <div className="feature">
+            <img src="placeholder1.jpg" alt="Aufgabenverwaltung" style={{ width: '100%', borderRadius: '8px' }} />
             <h3>Aufgabenverwaltung</h3>
-            <p>Verwalte deine Aufgaben einfach und effizient.</p>
+            <p>Verwalte deine Aufgaben einfach und effizient. Behalte den Überblick über alle deine To-Dos, setze Prioritäten und erledige sie schneller als je zuvor.</p>
           </div>
           <div className="feature">
+            <img src="placeholder2.jpg" alt="Erinnerungen" style={{ width: '100%', borderRadius: '8px' }} />
             <h3>Erinnerungen</h3>
-            <p>Setze Erinnerungen, um keine Fristen zu verpassen.</p>
+            <p>Setze personalisierte Erinnerungen, damit du nie wieder eine wichtige Deadline verpasst – ganz egal ob privat oder beruflich.</p>
           </div>
           <div className="feature">
+            <img src="placeholder3.jpg" alt="Teamarbeit" style={{ width: '100%', borderRadius: '8px' }} />
             <h3>Teamarbeit</h3>
-            <p>Arbeite mit deinem Team zusammen und teile Aufgaben.</p>
+            <p>Teile Aufgaben, arbeite gemeinsam an Projekten und bleibe mit deinem Team auf dem Laufenden – alles an einem Ort.</p>
           </div>
         </div>
       </div>
 
-      <div className="testimonials-section">
+      {/* Testimonials */}
+      <div className="testimonials-section" id="testimonials">
         <h2>Was unsere Nutzer sagen</h2>
         <div className="testimonial">
           <p>"TaskHero hat meine Produktivität enorm gesteigert!" - Max M.</p>
@@ -110,7 +119,8 @@ function LandingPage({ onLogin }) {
         </div>
       </div>
 
-      <div className="pricing-section">
+      {/* Preise */}
+      <div className="pricing-section" id="pricing">
         <h2>Preise</h2>
         <div className="pricing-plan">
           <h3>Basisplan</h3>
@@ -122,7 +132,8 @@ function LandingPage({ onLogin }) {
         </div>
       </div>
 
-      <div className="faq-section">
+      {/* FAQ */}
+      <div className="faq-section" id="faq">
         <h2>Häufig gestellte Fragen</h2>
         <div className="faq">
           <h3>Wie kann ich mich registrieren?</h3>
@@ -134,11 +145,13 @@ function LandingPage({ onLogin }) {
         </div>
       </div>
 
+      {/* Call to Action */}
       <div className="cta-section">
         <h2>Bereit, deine Produktivität zu steigern?</h2>
         <button className="cta-button" onClick={onLogin}>Jetzt registrieren!</button>
       </div>
 
+      {/* Footer */}
       <footer className="footer">
         <p>&copy; 2023 TaskHero. Alle Rechte vorbehalten.</p>
         <a href="#">Datenschutzrichtlinie</a>
