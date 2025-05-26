@@ -1,6 +1,6 @@
 :root {
   --bg: #1c1e26;
-  --text: #f1f1f1;
+  --text: rgb(14, 21, 215);
   --primary: #6366f1;
   --card-bg: #2c2f3a;
   --accent: #3b3f4e;
@@ -39,10 +39,14 @@
   
   body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-image: url('https://source.unsplash.com/1600x900/?technology,workspace');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
   }
+  
   body.dark {
     background: var(--bg);
     color: var(--text);
@@ -107,9 +111,7 @@
     border: none;
     padding: 0.5rem 1rem;
     cursor: pointer;
-    border-radius: 5px;<Link to="/tasks"><FaTasks /> Aufgaben</Link>
-    <Link to="/epics"><FaListUl /> Epics</Link>
-    <Link to="/sprints"><FaRocket /> Sprints</Link>
+    border-radius: 5px;
   }
   
   /* Responsive Layout */

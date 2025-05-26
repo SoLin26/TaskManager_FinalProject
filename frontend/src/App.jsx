@@ -9,17 +9,17 @@ import BackButton from "./components/BackButton";
 import TopNavBar from "./components/TopNavbar";
 import Dashboard from "./components/Dashboard";
 import LandingPage from "./components/LandingPage";
+import CalendarComponent from "./components/CalendarComponent";
 import "./index.css";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // <--- Login-Zustand
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Login-Zustand
 
   useEffect(() => {
     document.body.className = darkMode ? "dark" : "";
   }, [darkMode]);
 
-  // Layout für eingeloggte Benutzer
   const LoggedInLayout = () => (
     <div className="app">
       <TopNavBar />
@@ -29,6 +29,7 @@ function App() {
         <Sidebar />
         <main className="content">
           <BackButton />
+          <CalendarComponent /> {/* 📅 Optional: Zeige Kalender im Layout */}
           <Routes>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/tasks" element={<TaskList />} />
@@ -54,7 +55,6 @@ function App() {
           )
         }
       />
-      {/* Eingeloggte Benutzer */}
       <Route
         path="/*"
         element={

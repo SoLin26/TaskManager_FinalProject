@@ -1,0 +1,60 @@
+
+.epic {
+    background-color: #15d7f1 !important;
+    border-left: 5px solid #00acc1;
+    color: #006064;
+    padding-left: 5px;
+  }
+  .task {
+    background-color: #c57e0c !important;
+    border-left: 5px solid #fb8c00;
+    color: #e65100;
+    padding-left: 5px;
+  }
+  .meeting {
+    background-color: #9b2bac !important;
+    border-left: 5px solid #8e24aa;
+    color: #4a148c;
+    padding-left: 5px;
+  }
+
+.event-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    background-color: #ffffffcc;
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+  }
+  
+  .event-form input,
+  .event-form select {
+    padding: 10px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    flex: 1;
+    min-width: 160px;
+    background-color: #f9f9f9;
+    color: #333;
+  }
+  
+  .event-form button {
+    padding: 10px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .event-form button:hover {
+    background-color: #0056b3;
+  }
+  
