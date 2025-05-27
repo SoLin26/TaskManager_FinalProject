@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Footer from "./components/Footer";
@@ -10,6 +10,9 @@ import TopNavBar from "./components/TopNavbar";
 import Dashboard from "./components/Dashboard";
 import LandingPage from "./components/LandingPage";
 import CalendarComponent from "./components/CalendarComponent";
+import NotificationsPage from "../src/page/NotificationsPage";
+import MessagesPage from "../src/page/MessagesPage";
+import ProfilePage from "../src/page/ProfilePage";
 import "./index.css";
 
 function App() {
@@ -29,11 +32,14 @@ function App() {
         <Sidebar />
         <main className="content">
           <BackButton />
-          <CalendarComponent /> {/* 📅 Optional: Zeige Kalender im Layout */}
+          <CalendarComponent />
           <Routes>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/tasks" element={<TaskList />} />
             <Route path="/forum" element={<TaskForum />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
+            <Route path="/messages" element={<MessagesPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
             <Route path="*" element={<Navigate to="/dashboard" />} />
           </Routes>
         </main>
@@ -64,5 +70,4 @@ function App() {
     </Routes>
   );
 }
-
 export default App;
