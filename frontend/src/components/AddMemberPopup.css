@@ -1,0 +1,129 @@
+/* 🧩 Container principal */
+.popup-container {
+    position: absolute;
+    top: 70px;
+    right: 10px;
+    width: 300px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in-out;
+    font-family: sans-serif;
+  }
+  
+  /* 🌫️ Fond sombre derrière la popup */
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 999;
+  }
+  
+  /* 🧷 En-tête */
+  .popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+  }
+  
+  /* ❌ Bouton de fermeture */
+  .close-btn {
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+  }
+  
+  /* 📝 Corps */
+  .popup-body {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  /* 🔍 Champ de recherche */
+  .popup-body input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  
+  /* 📋 Liste de suggestions */
+  .suggestion-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 120px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #f9f9f9;
+  }
+  
+  .suggestion-list li {
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  .suggestion-list li:hover,
+  .suggestion-list li.selected {
+    background-color: #e6f0ff;
+  }
+  
+  /* 🚫 Aucun résultat */
+  .no-result {
+    color: #999;
+    text-align: center;
+    padding: 8px;
+  }
+  
+  /* ➕ Bouton d'ajout */
+  .add-btn {
+    padding: 8px;
+    background-color: #0079bf;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .add-btn:hover {
+    background-color: #026aa7;
+  }
+  
+  .add-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  /* ✅ Message de confirmation */
+  .confirmation-message {
+    background-color: #e6ffed;
+    color: #237804;
+    padding: 8px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  /* ✨ Animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
