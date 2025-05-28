@@ -31,6 +31,7 @@ function App() {
           <BackButton />
           <CalendarComponent /> {/* 📅 Optional: Zeige Kalender im Layout */}
           <Routes>
+            <Route path="/LandingPage" element={<LandingPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/tasks" element={<TaskList />} />
             <Route path="/forum" element={<TaskForum />} />

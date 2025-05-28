@@ -15,7 +15,9 @@ function LandingPage({ onLogin }) {
         <button className="login-button" onClick={handleLoginToggle}>
           🔑 Login
         </button>
+
       </div>
+    
 
       <div className="top-bar-gray">
         <a href="#features" className="features-link">✨ Funktionen</a>
