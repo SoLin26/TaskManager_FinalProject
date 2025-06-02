@@ -1,12 +1,81 @@
 import React, { useState } from 'react';
 import './LandingPage.css';
 
-function LandingPage({ onLogin }) {
+function LandingPage() {
+  // Login Modal öffnen/schließen
   const [isLoginOpen, setLoginOpen] = useState(false);
+  // Video anzeigen
   const [showVideo, setShowVideo] = useState(false);
+
+  // Registrierung-State
+  const [fullname, setFullname] = useState('');
+  const [usernameReg, setUsernameReg] = useState('');
+  const [emailReg, setEmailReg] = useState('');
+  const [passwordReg, setPasswordReg] = useState('');
+  const [registerMessage, setRegisterMessage] = useState('');
+
+  // Login-State
+  const [usernameLogin, setUsernameLogin] = useState('');
+  const [passwordLogin, setPasswordLogin] = useState('');
+  const [loginMessage, setLoginMessage] = useState('');
 
   const handleLoginToggle = () => {
     setLoginOpen(!isLoginOpen);
+    setLoginMessage('');
+  };
+
+  // Registrierung an Backend schicken
+  const handleRegister = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/user/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullname,
+          username: usernameReg,
+          email: emailReg,
+          password: passwordReg,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setRegisterMessage('✅ Registrierung erfolgreich! Du kannst dich jetzt einloggen.');
+        setFullname('');
+        setUsernameReg('');
+        setEmailReg('');
+        setPasswordReg('');
+      } else {
+        setRegisterMessage('❌ Fehler: ' + data.message);
+      }
+    } catch (err) {
+      setRegisterMessage('❌ Netzwerkfehler: ' + err.message);
+    }
+  };
+
+  // Login an Backend schicken
+  const handleLogin = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/user/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: usernameLogin,
+          password: passwordLogin,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setLoginMessage(`✅ Login erfolgreich! Willkommen, ${data.user.fullname}`);
+        setLoginOpen(false);
+        setUsernameLogin('');
+        setPasswordLogin('');
+        // Hier kannst du z.B. Token speichern oder weiterleiten
+      } else {
+        setLoginMessage('❌ Fehler: ' + data.message);
+      }
+    } catch (err) {
+      setLoginMessage('❌ Netzwerkfehler: ' + err.message);
+    }
   };
 
   return (
@@ -32,14 +101,43 @@ function LandingPage({ onLogin }) {
           <p className="landing-subtitle">
             Entfliehe der Unordnung und entfessle deine Produktivität mit <strong>TaskHero</strong>.
           </p>
-          <input
-            type="email"
-            placeholder="E-Mail-Adresse eingeben"
-            className="landing-input"
-          />
-          <button className="landing-button" onClick={onLogin}>
-            🚀 Jetzt registrieren – es ist kostenlos!
-          </button>
+
+          {/* Registrierung */}
+          <div style={{ marginBottom: 20 }}>
+            <input
+              type="text"
+              placeholder="Vollständiger Name"
+              className="landing-input"
+              value={fullname}
+              onChange={e => setFullname(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Benutzername"
+              className="landing-input"
+              value={usernameReg}
+              onChange={e => setUsernameReg(e.target.value)}
+            />
+            <input
+              type="email"
+              placeholder="E-Mail-Adresse"
+              className="landing-input"
+              value={emailReg}
+              onChange={e => setEmailReg(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Passwort"
+              className="landing-input"
+              value={passwordReg}
+              onChange={e => setPasswordReg(e.target.value)}
+            />
+            <button className="landing-button" onClick={handleRegister}>
+              🚀 Jetzt registrieren – es ist kostenlos!
+            </button>
+            {registerMessage && <p>{registerMessage}</p>}
+          </div>
+
           <p className="landing-terms">
             Durch Eingabe meiner E-Mail-Adresse erkenne ich die
             <a href="#"> Datenschutzrichtlinie</a> an.
@@ -74,14 +172,28 @@ function LandingPage({ onLogin }) {
         </div>
       </div>
 
+      {/* Login Modal */}
       {isLoginOpen && (
         <div className="modal">
           <div className="modal-content">
             <span className="close" onClick={handleLoginToggle}>&times;</span>
             <h2>Login</h2>
-            <input type="email" placeholder="E-Mail-Adresse" className="modal-input" />
-            <input type="password" placeholder="Passwort" className="modal-input" />
-            <button className="modal-button" onClick={onLogin}>Einloggen</button>
+            <input
+              type="text"
+              placeholder="Benutzername"
+              className="modal-input"
+              value={usernameLogin}
+              onChange={e => setUsernameLogin(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Passwort"
+              className="modal-input"
+              value={passwordLogin}
+              onChange={e => setPasswordLogin(e.target.value)}
+            />
+            <button className="modal-button" onClick={handleLogin}>Einloggen</button>
+            {loginMessage && <p>{loginMessage}</p>}
           </div>
         </div>
       )}
@@ -148,7 +260,7 @@ function LandingPage({ onLogin }) {
       {/* Call to Action */}
       <div className="cta-section">
         <h2>Bereit, deine Produktivität zu steigern?</h2>
-        <button className="cta-button" onClick={onLogin}>Jetzt registrieren!</button>
+        <button className="cta-button" onClick={() => setLoginOpen(true)}>Jetzt registrieren!</button>
       </div>
 
       {/* Footer */}
