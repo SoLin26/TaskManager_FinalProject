@@ -3,14 +3,13 @@ import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import authenticateRoute from './routes/authenticateRoute.js'
+
 dotenv.config();
 
 const mongoURI = process.env.MONGODB_URI;
 
-mongoose.connect(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(mongoURI)
+
 .then(() => {
   console.log("✅ MongoDB erfolgreich verbunden");
 })
@@ -42,9 +41,7 @@ app.post("/api/tasks", (req, res) => {
     subCategory,
     date,
     priority,
-    description,
-  };
-
+    description,•••
   tasks.push(newTask);
   console.log("Neue Aufgabe gespeichert:", newTask);
 
