@@ -25,7 +25,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Beispiel: Alle Tasks-Routen sind nur für authentifizierte User
+// Beispiel: Alle Tasks-Routen sind nur für authentifizierte U
 app.use("/api/tasks", authenticate);
 
 // Simulierter Speicher für Aufgaben (später mit DB ersetzen)
