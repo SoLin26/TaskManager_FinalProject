@@ -17,7 +17,15 @@ function Dashboard() {
     "📚 Learning": "",
     "✅ Done": "",
   });
+
   const [editingTask, setEditingTask] = useState({ column: null, index: null });
+  const [editableTitles, setEditableTitles] = useState({
+    "⭐ Level 1": false,
+    "😃 Level 2": false,
+    "🦄 Level 3": false,
+    "📚 Learning": false,
+    "✅ Done": false,
+  });
 
   const handleAddTask = (column) => {
     if (!newTasks[column]) return;
@@ -35,11 +43,54 @@ function Dashboard() {
     setEditingTask({ column: null, index: null });
   };
 
+  const handleTitleChange = (oldTitle, newTitle) => {
+    if (!newTitle.trim() || newTitle === oldTitle) {
+      setEditableTitles({ ...editableTitles, [oldTitle]: false });
+      return;
+    }
+
+    const updatedBoard = {};
+    const updatedNewTasks = {};
+    const updatedEditableTitles = {};
+
+    Object.keys(board).forEach((key) => {
+      const newKey = key === oldTitle ? newTitle : key;
+      updatedBoard[newKey] = board[key];
+      updatedNewTasks[newKey] = newTasks[key];
+      updatedEditableTitles[newKey] = editableTitles[key];
+    });
+
+    setBoard(updatedBoard);
+    setNewTasks(updatedNewTasks);
+    setEditableTitles(updatedEditableTitles);
+  };
+
   return (
     <div style={styles.board}>
       {Object.keys(board).map((column) => (
         <div key={column} style={styles.column}>
-          <h3 style={styles.columnTitle}>{column}</h3>
+          {/* TITRE éditable */}
+          {editableTitles[column] ? (
+            <input
+              type="text"
+              autoFocus
+              defaultValue={column}
+              onBlur={(e) => handleTitleChange(column, e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleTitleChange(column, e.target.value);
+                }
+              }}
+              style={styles.input}
+            />
+          ) : (
+            <h3
+              style={styles.columnTitle}
+              onClick={() => setEditableTitles({ ...editableTitles, [column]: true })}
+            >
+              {column}
+            </h3>
+          )}
 
           {/* Description par niveau */}
           {column === "⭐ Level 1" && (
@@ -58,6 +109,7 @@ function Dashboard() {
             </p>
           )}
 
+          {/* Cartes */}
           {board[column].map((task, index) => (
             <div key={index} style={styles.card}>
               {editingTask.column === column && editingTask.index === index ? (
@@ -78,9 +130,7 @@ function Dashboard() {
                     ))}
                 </select>
               ) : (
-                <div onClick={() => setEditingTask({ column, index })}>
-                  {task}
-                </div>
+                <div onClick={() => setEditingTask({ column, index })}>{task}</div>
               )}
             </div>
           ))}
@@ -89,9 +139,7 @@ function Dashboard() {
             type="text"
             placeholder="Nouvelle carte..."
             value={newTasks[column]}
-            onChange={(e) =>
-              setNewTasks({ ...newTasks, [column]: e.target.value })
-            }
+            onChange={(e) => setNewTasks({ ...newTasks, [column]: e.target.value })}
             style={styles.input}
           />
           <button onClick={() => handleAddTask(column)} style={styles.addButton}>
@@ -102,6 +150,8 @@ function Dashboard() {
     </div>
   );
 }
+
+
 
 const styles = {
   board: {
@@ -124,6 +174,7 @@ const styles = {
     fontWeight: "bold",
     marginBottom: "10px",
     color: "#333",
+    cursor: "pointer",
   },
   description: {
     fontSize: "13px",

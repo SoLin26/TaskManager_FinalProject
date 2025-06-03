@@ -1,44 +1,39 @@
+
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import authenticateRoute from "./routes/authenticateRoute.js";
 import authenticate from "./middleware/authenticate.js";
-
 dotenv.config();
-
 const mongoURI = process.env.MONGODB_URI;
-
 mongoose
   .connect(mongoURI)
   .then(() => {
-    console.log("✅ MongoDB erfolgreich verbunden");
+    console.log(":weißes_häkchen: MongoDB erfolgreich verbunden");
   })
   .catch((err) => {
-    console.error("❌ MongoDB-Verbindung fehlgeschlagen:", err.message);
+    console.error(":x: MongoDB-Verbindung fehlgeschlagen:", err.message);
   });
-
 const app = express(); // **WICHTIG: Erst hier express app erstellen**
-
 const PORT = process.env.PORT || 3000;
-
 app.use(cors());
 app.use(express.json());
+<<<<<<< HEAD
 
 // Beispiel: Alle Tasks-Routen sind nur für authentifizierte U
+=======
+// Beispiel: Alle Tasks-Routen sind nur für authentifizierte User
+>>>>>>> 9614bb24952ce23c845c9a17cab062bcde0aeba7
 app.use("/api/tasks", authenticate);
-
 // Simulierter Speicher für Aufgaben (später mit DB ersetzen)
 let tasks = [];
-
-// 🟢 POST /api/tasks → Neue Aufgabe hinzufügen
+// :großer_grüner_kreis: POST /api/tasks → Neue Aufgabe hinzufügen
 app.post("/api/tasks", (req, res) => {
   const { category, subCategory, date, priority, description } = req.body;
-
   if (!category || !date || !priority || !description) {
     return res.status(400).json({ message: "Bitte alle Pflichtfelder ausfüllen." });
   }
-
   const newTask = {
     id: Date.now(),
     category,
@@ -47,28 +42,28 @@ app.post("/api/tasks", (req, res) => {
     priority,
     description,
   };
-
   tasks.push(newTask);
   console.log("Neue Aufgabe gespeichert:", newTask);
-
   res.status(201).json({ message: "Aufgabe erfolgreich gespeichert!", task: newTask });
 });
-
-// 🔵 GET /api/tasks → Alle Aufgaben anzeigen
+// :großer_blauer_kreis: GET /api/tasks → Alle Aufgaben anzeigen
 app.get("/api/tasks", (req, res) => {
   res.json(tasks);
 });
-
 // Test-Route
 app.get("/", (req, res) => {
   res.send("Server is ready");
 });
-
 // ** Authentifizierungs-Route **
 // => Hier sind deine Register/Login-Routen mit JWT-Logik
 app.use("/user", authenticateRoute);
-
 // Server starten
 app.listen(PORT, () => {
-  console.log(`🚀 Server läuft auf http://localhost:${PORT}`);
+  console.log(`:rakete: Server läuft auf http://localhost:${PORT}`);
 });
+
+
+
+
+
+
