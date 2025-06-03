@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './LandingPage.css';
 
-function LandingPage() {
+function LandingPage({ onLogin }) {
+  const navigate = useNavigate();
+
   // Login Modal öffnen/schließen
   const [isLoginOpen, setLoginOpen] = useState(false);
   // Video anzeigen
@@ -69,7 +72,9 @@ function LandingPage() {
         setLoginOpen(false);
         setUsernameLogin('');
         setPasswordLogin('');
-        // Hier kannst du z.B. Token speichern oder weiterleiten
+        localStorage.setItem('user', JSON.stringify(data.user)); // falls du User-Daten speichern willst
+        onLogin();              // <-- WICHTIG: Loginstatus im App setzen
+        navigate('/dashboard'); // <-- Weiterleitung zum Dashboard
       } else {
         setLoginMessage('❌ Fehler: ' + data.message);
       }
@@ -240,35 +245,22 @@ function LandingPage() {
         </div>
         <div className="pricing-plan">
           <h3>Teamplan</h3>
-          <p>Für Teams ab 5 Benutzern - 10€ pro Benutzer/Monat.</p>
+          <p>Für Teams ab 5 Personen, $9,99 pro Nutzer/Monat.</p>
         </div>
       </div>
 
       {/* FAQ */}
       <div className="faq-section" id="faq">
         <h2>Häufig gestellte Fragen</h2>
-        <div className="faq">
-          <h3>Wie kann ich mich registrieren?</h3>
-          <p>Einfach auf den Registrieren-Button klicken und die E-Mail-Adresse eingeben.</p>
+        <div className="faq-item">
+          <h4>Ist TaskHero wirklich kostenlos?</h4>
+          <p>Ja, der Basisplan ist komplett kostenlos und beinhaltet alle wichtigen Funktionen für Einzelpersonen.</p>
         </div>
-        <div className="faq">
-          <h3>Gibt es eine mobile App?</h3>
-          <p>Ja, TaskHero ist sowohl für iOS als auch für Android verfügbar.</p>
+        <div className="faq-item">
+          <h4>Wie sicher sind meine Daten?</h4>
+          <p>Wir verwenden modernste Sicherheitsstandards, um deine Daten zu schützen.</p>
         </div>
       </div>
-
-      {/* Call to Action */}
-      <div className="cta-section">
-        <h2>Bereit, deine Produktivität zu steigern?</h2>
-        <button className="cta-button" onClick={() => setLoginOpen(true)}>Jetzt registrieren!</button>
-      </div>
-
-      {/* Footer */}
-      <footer className="footer">
-        <p>&copy; 2023 TaskHero. Alle Rechte vorbehalten.</p>
-        <a href="#">Datenschutzrichtlinie</a>
-        <a href="#">Nutzungsbedingungen</a>
-      </footer>
     </div>
   );
 }

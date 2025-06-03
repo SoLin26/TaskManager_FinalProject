@@ -1,65 +1,35 @@
-import express, { Router } from "express";
+import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import authenticateRoute from './routes/authenticateRoute.js'
+
+import authenticateRoute from './routes/authenticateRoute.js';
+import todoRoutes from './routes/todos.js'; // ✅ ToDo-Routen importieren
 
 dotenv.config();
-
-const mongoURI = process.env.MONGODB_URI;
-
-mongoose.connect(mongoURI)
-
-.then(() => {
-  console.log("✅ MongoDB erfolgreich verbunden");
-})
-.catch((err) => {
-  console.error("❌ MongoDB-Verbindung fehlgeschlagen:", err.message);
-});
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Verbindung zur MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log("✅ MongoDB erfolgreich verbunden"))
+  .catch((err) => console.error("❌ MongoDB-Verbindung fehlgeschlagen:", err.message));
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
+// Routen
+app.use("/user", authenticateRoute);       // 🔐 Authentifizierung
+app.use("/api/todos", todoRoutes);         // 📝 ToDo-API
 
-// Simulierter Speicher für Aufgaben (später mit DB ersetzen)
-let tasks = [];
-
-// 🟢 POST /api/tasks → Neue Aufgabe hinzufügen
-app.post("/api/tasks", (req, res) => {
-  const { category, subCategory, date, priority, description } = req.body;
-
-  if (!category || !date || !priority || !description) {
-    return res.status(400).json({ message: "Bitte alle Pflichtfelder ausfüllen." });
-  }
-
-  const newTask = {
-    id: Date.now(),
-    category,
-    subCategory,
-    date,
-    priority,
-    description,•••
-  tasks.push(newTask);
-  console.log("Neue Aufgabe gespeichert:", newTask);
-
-  res.status(201).json({ message: "Aufgabe erfolgreich gespeichert!", task: newTask });
-});
-
-
-app.get( "/", (req, res) => {
-  res.send("Server is ready");
-});
-
-app.use("/user", authenticateRoute);
-// 🔵 GET /api/tasks
-app.get("/login", (req, res) => {
-  res.json(tasks);
+// Test-Route
+app.get("/", (req, res) => {
+  res.send("🚀 Server läuft!");
 });
 
 // Server starten
 app.listen(PORT, () => {
-  console.log(`Server läuft auf http://localhost:${PORT}`);
+  console.log(`🌍 Server läuft auf http://localhost:${PORT}`);
 });

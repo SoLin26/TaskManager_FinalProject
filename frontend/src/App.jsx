@@ -16,10 +16,12 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Login-Zustand
 
+  // Body-Klasse für Darkmode anpassen
   useEffect(() => {
     document.body.className = darkMode ? "dark" : "";
   }, [darkMode]);
 
+  // Layout, das angezeigt wird, wenn der Nutzer eingeloggt ist
   const LoggedInLayout = () => (
     <div className="app">
       <TopNavBar />
@@ -29,9 +31,9 @@ function App() {
         <Sidebar />
         <main className="content">
           <BackButton />
-          <CalendarComponent /> {/* 📅 Optional: Zeige Kalender im Layout */}
+          <CalendarComponent /> {/* 📅 Optional: Kalender anzeigen */}
           <Routes>
-            <Route path="/LandingPage" element={<LandingPage />} />
+            <Route path="/LandingPage" element={<LandingPage onLogin={() => setIsLoggedIn(true)} />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/tasks" element={<TaskList />} />
             <Route path="/forum" element={<TaskForum />} />
