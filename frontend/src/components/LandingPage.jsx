@@ -72,7 +72,7 @@ function LandingPage({ onLogin }) {
         setLoginOpen(false);
         setUsernameLogin('');
         setPasswordLogin('');
-        localStorage.setItem('user', JSON.stringify(data.user)); // falls du User-Daten speichern willst
+        localStorage.setItem('user', JSON.stringify(data.user)); //  User-Daten speichern 
         onLogin();              // <-- WICHTIG: Loginstatus im App setzen
         navigate('/dashboard'); // <-- Weiterleitung zum Dashboard
       } else {
