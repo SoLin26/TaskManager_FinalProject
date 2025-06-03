@@ -1,4 +1,5 @@
 import express from "express";
+import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
 const router = express.Router();
@@ -44,6 +45,17 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Ungültige Anmeldedaten" });
     }
 
+    // JWT Token erstellen
+    const token = jwt.sign(
+      {
+        id: user._id,
+        username: user.username,
+        roles: user.roles,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
     res.status(200).json({
       message: "Anmeldung erfolgreich",
       user: {
@@ -52,17 +64,13 @@ router.post("/login", async (req, res) => {
         username: user.username,
         email: user.email,
         roles: user.roles
-      }
+      },
+      token // Token zurückgeben
     });
   } catch (error) {
     console.error("Login-Fehler:", error);
     res.status(500).json({ message: "Interner Serverfehler", error: error.message });
   }
-});
-
-// Logout (Dummy)
-router.get("/logout", (req, res) => {
-  res.json({ data: "Logout erfolgreich (Dummy)" });
 });
 
 export default router;

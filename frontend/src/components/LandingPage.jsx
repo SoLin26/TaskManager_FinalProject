@@ -1,35 +1,35 @@
-import React, { useState } from 'react';
-import './LandingPage.css';
+import React, { useState } from "react";
+import "./LandingPage.css";
 
-function LandingPage() {
+function LandingPage({ onLogin }) {
   // Login Modal öffnen/schließen
   const [isLoginOpen, setLoginOpen] = useState(false);
   // Video anzeigen
   const [showVideo, setShowVideo] = useState(false);
 
   // Registrierung-State
-  const [fullname, setFullname] = useState('');
-  const [usernameReg, setUsernameReg] = useState('');
-  const [emailReg, setEmailReg] = useState('');
-  const [passwordReg, setPasswordReg] = useState('');
-  const [registerMessage, setRegisterMessage] = useState('');
+  const [fullname, setFullname] = useState("");
+  const [usernameReg, setUsernameReg] = useState("");
+  const [emailReg, setEmailReg] = useState("");
+  const [passwordReg, setPasswordReg] = useState("");
+  const [registerMessage, setRegisterMessage] = useState("");
 
   // Login-State
-  const [usernameLogin, setUsernameLogin] = useState('');
-  const [passwordLogin, setPasswordLogin] = useState('');
-  const [loginMessage, setLoginMessage] = useState('');
+  const [usernameLogin, setUsernameLogin] = useState("");
+  const [passwordLogin, setPasswordLogin] = useState("");
+  const [loginMessage, setLoginMessage] = useState("");
 
   const handleLoginToggle = () => {
     setLoginOpen(!isLoginOpen);
-    setLoginMessage('');
+    setLoginMessage("");
   };
 
   // Registrierung an Backend schicken
   const handleRegister = async () => {
     try {
-      const res = await fetch('http://localhost:5000/user/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("http://localhost:5000/user/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           fullname,
           username: usernameReg,
@@ -39,25 +39,27 @@ function LandingPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        setRegisterMessage('✅ Registrierung erfolgreich! Du kannst dich jetzt einloggen.');
-        setFullname('');
-        setUsernameReg('');
-        setEmailReg('');
-        setPasswordReg('');
+        setRegisterMessage(
+          "✅ Registrierung erfolgreich! Du kannst dich jetzt einloggen."
+        );
+        setFullname("");
+        setUsernameReg("");
+        setEmailReg("");
+        setPasswordReg("");
       } else {
-        setRegisterMessage('❌ Fehler: ' + data.message);
+        setRegisterMessage("❌ Fehler: " + data.message);
       }
     } catch (err) {
-      setRegisterMessage('❌ Netzwerkfehler: ' + err.message);
+      setRegisterMessage("❌ Netzwerkfehler: " + err.message);
     }
   };
 
   // Login an Backend schicken
   const handleLogin = async () => {
     try {
-      const res = await fetch('http://localhost:5000/user/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("http://localhost:5000/user/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           username: usernameLogin,
           password: passwordLogin,
@@ -65,16 +67,18 @@ function LandingPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        setLoginMessage(`✅ Login erfolgreich! Willkommen, ${data.user.fullname}`);
+        setLoginMessage(
+          `✅ Login erfolgreich! Willkommen, ${data.user.fullname}`
+        );
         setLoginOpen(false);
-        setUsernameLogin('');
-        setPasswordLogin('');
-        // Hier kannst du z.B. Token speichern oder weiterleiten
+        setUsernameLogin("");
+        setPasswordLogin("");
+        onLogin(data.user); // <-- hier aufrufen, damit der Parent Bescheid weiß
       } else {
-        setLoginMessage('❌ Fehler: ' + data.message);
+        setLoginMessage("❌ Fehler: " + data.message);
       }
     } catch (err) {
-      setLoginMessage('❌ Netzwerkfehler: ' + err.message);
+      setLoginMessage("❌ Netzwerkfehler: " + err.message);
     }
   };
 
@@ -87,10 +91,18 @@ function LandingPage() {
       </div>
 
       <div className="top-bar-gray">
-        <a href="#features" className="features-link">✨ Funktionen</a>
-        <a href="#testimonials" className="features-link">✅ Nutzerstimmen</a>
-        <a href="#pricing" className="features-link">💰 Preise</a>
-        <a href="#faq" className="features-link">❓ FAQ</a>
+        <a href="#features" className="features-link">
+          ✨ Funktionen
+        </a>
+        <a href="#testimonials" className="features-link">
+          ✅ Nutzerstimmen
+        </a>
+        <a href="#pricing" className="features-link">
+          💰 Preise
+        </a>
+        <a href="#faq" className="features-link">
+          ❓ FAQ
+        </a>
       </div>
 
       <div className="landing-wrapper">
@@ -99,7 +111,8 @@ function LandingPage() {
             Erfasse, organisiere und erledige deine Aufgaben von überall aus.
           </h1>
           <p className="landing-subtitle">
-            Entfliehe der Unordnung und entfessle deine Produktivität mit <strong>TaskHero</strong>.
+            Entfliehe der Unordnung und entfessle deine Produktivität mit{" "}
+            <strong>TaskHero</strong>.
           </p>
 
           {/* Registrierung */}
@@ -109,28 +122,28 @@ function LandingPage() {
               placeholder="Vollständiger Name"
               className="landing-input"
               value={fullname}
-              onChange={e => setFullname(e.target.value)}
+              onChange={(e) => setFullname(e.target.value)}
             />
             <input
               type="text"
               placeholder="Benutzername"
               className="landing-input"
               value={usernameReg}
-              onChange={e => setUsernameReg(e.target.value)}
+              onChange={(e) => setUsernameReg(e.target.value)}
             />
             <input
               type="email"
               placeholder="E-Mail-Adresse"
               className="landing-input"
               value={emailReg}
-              onChange={e => setEmailReg(e.target.value)}
+              onChange={(e) => setEmailReg(e.target.value)}
             />
             <input
               type="password"
               placeholder="Passwort"
               className="landing-input"
               value={passwordReg}
-              onChange={e => setPasswordReg(e.target.value)}
+              onChange={(e) => setPasswordReg(e.target.value)}
             />
             <button className="landing-button" onClick={handleRegister}>
               🚀 Jetzt registrieren – es ist kostenlos!
@@ -165,10 +178,7 @@ function LandingPage() {
         </div>
 
         <div className="landing-image">
-          <img
-            src="TaskHandy.png"
-            alt="TaskHero App Vorschau"
-          />
+          <img src="TaskHandy.png" alt="TaskHero App Vorschau" />
         </div>
       </div>
 
@@ -176,23 +186,27 @@ function LandingPage() {
       {isLoginOpen && (
         <div className="modal">
           <div className="modal-content">
-            <span className="close" onClick={handleLoginToggle}>&times;</span>
+            <span className="close" onClick={handleLoginToggle}>
+              &times;
+            </span>
             <h2>Login</h2>
             <input
               type="text"
               placeholder="Benutzername"
               className="modal-input"
               value={usernameLogin}
-              onChange={e => setUsernameLogin(e.target.value)}
+              onChange={(e) => setUsernameLogin(e.target.value)}
             />
             <input
               type="password"
               placeholder="Passwort"
               className="modal-input"
               value={passwordLogin}
-              onChange={e => setPasswordLogin(e.target.value)}
+              onChange={(e) => setPasswordLogin(e.target.value)}
             />
-            <button className="modal-button" onClick={handleLogin}>Einloggen</button>
+            <button className="modal-button" onClick={handleLogin}>
+              Einloggen
+            </button>
             {loginMessage && <p>{loginMessage}</p>}
           </div>
         </div>
@@ -203,19 +217,41 @@ function LandingPage() {
         <h2>Funktionen von TaskHero</h2>
         <div className="features">
           <div className="feature">
-            <img src="./Photo/Aufgaben.png" alt="Aufgabenverwaltung" style={{ width: '100%', borderRadius: '8px' }} />
+            <img
+              src="./Photo/Aufgaben.png"
+              alt="Aufgabenverwaltung"
+              style={{ width: "100%", borderRadius: "8px" }}
+            />
             <h3>Aufgabenverwaltung</h3>
-            <p>Verwalte deine Aufgaben einfach und effizient. Behalte den Überblick über alle deine To-Dos, setze Prioritäten und erledige sie schneller als je zuvor.</p>
+            <p>
+              Verwalte deine Aufgaben einfach und effizient. Behalte den
+              Überblick über alle deine To-Dos, setze Prioritäten und erledige
+              sie schneller als je zuvor.
+            </p>
           </div>
           <div className="feature">
-            <img src="./Photo/Erinnerung.png" alt="Erinnerungen" style={{ width: '35%', borderRadius: '8px' }} />
+            <img
+              src="./Photo/Erinnerung.png"
+              alt="Erinnerungen"
+              style={{ width: "35%", borderRadius: "8px" }}
+            />
             <h3>Erinnerungen</h3>
-            <p>Setze personalisierte Erinnerungen, damit du nie wieder eine wichtige Deadline verpasst – ganz egal ob privat oder beruflich.</p>
+            <p>
+              Setze personalisierte Erinnerungen, damit du nie wieder eine
+              wichtige Deadline verpasst – ganz egal ob privat oder beruflich.
+            </p>
           </div>
           <div className="feature">
-            <img src="./Photo/Todo.png" alt="Teamarbeit" style={{ width: '50%', borderRadius: '8px' }} />
+            <img
+              src="./Photo/Todo.png"
+              alt="Teamarbeit"
+              style={{ width: "50%", borderRadius: "8px" }}
+            />
             <h3>Teamarbeit</h3>
-            <p>Teile Aufgaben, arbeite gemeinsam an Projekten und bleibe mit deinem Team auf dem Laufenden – alles an einem Ort.</p>
+            <p>
+              Teile Aufgaben, arbeite gemeinsam an Projekten und bleibe mit
+              deinem Team auf dem Laufenden – alles an einem Ort.
+            </p>
           </div>
         </div>
       </div>
@@ -249,7 +285,10 @@ function LandingPage() {
         <h2>Häufig gestellte Fragen</h2>
         <div className="faq">
           <h3>Wie kann ich mich registrieren?</h3>
-          <p>Einfach auf den Registrieren-Button klicken und die E-Mail-Adresse eingeben.</p>
+          <p>
+            Einfach auf den Registrieren-Button klicken und die E-Mail-Adresse
+            eingeben.
+          </p>
         </div>
         <div className="faq">
           <h3>Gibt es eine mobile App?</h3>
@@ -260,7 +299,9 @@ function LandingPage() {
       {/* Call to Action */}
       <div className="cta-section">
         <h2>Bereit, deine Produktivität zu steigern?</h2>
-        <button className="cta-button" onClick={() => setLoginOpen(true)}>Jetzt registrieren!</button>
+        <button className="cta-button" onClick={() => setLoginOpen(true)}>
+          Jetzt registrieren!
+        </button>
       </div>
 
       {/* Footer */}

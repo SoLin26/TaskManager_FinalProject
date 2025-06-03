@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Header from "./components/Header";
@@ -20,25 +19,42 @@ import "./index.css";
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
- 
+  const [loading, setLoading] = useState(true); // neu
+
+  // ✅ Token aus localStorage beim Start prüfen
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      // Optional: Hier kannst du prüfen, ob der Token noch gültig ist
+      setIsLoggedIn(true);
+    }
+    setLoading(false); // Ladezustand beenden
+  }, []);
 
   useEffect(() => {
     document.body.className = darkMode ? "dark" : "";
   }, [darkMode]);
 
+  const handleLogin = (token) => {
+    localStorage.setItem("token", token); // Token speichern
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+  };
+
   const LoggedInLayout = () => (
     <div className="app">
-      <TopNavBar />
+      <TopNavBar onLogout={handleLogout} />
       <Header toggleDarkMode={() => setDarkMode(!darkMode)} />
       <div className="main-content">
         <Sidebar />
         <main className="content">
           <BackButton />
-
-          
           <CalendarComponent />
           <Routes>
-            <Route path="/LandingPage" element={<LandingPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/tasks" element={<TaskList />} />
             <Route path="/forum" element={<TaskForum />} />
@@ -53,19 +69,27 @@ function App() {
     </div>
   );
 
+  if (loading) {
+    // Optional: Ladeanzeige, bis geprüft ist ob token da ist
+    return <div>Lädt...</div>;
+  }
+
   return (
     <Routes>
       <Route
         path="/"
         element={
           isLoggedIn ? (
-            <Navigate to="/dashboard" />
+            <Navigate to="/dashboard" replace />
           ) : (
-            <LandingPage onLogin={() => setIsLoggedIn(true)} />
+            <LandingPage onLogin={handleLogin} />
           )
         }
       />
-      <Route path="/*" element={isLoggedIn ? <LoggedInLayout /> : <Navigate to="/" />} />
+      <Route
+        path="/*"
+        element={isLoggedIn ? <LoggedInLayout /> : <Navigate to="/" replace />}
+      />
     </Routes>
   );
 }
