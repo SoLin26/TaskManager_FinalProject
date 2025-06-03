@@ -271,7 +271,7 @@ function LandingPage({ onLogin }) {
           <p>Wir verwenden modernste Sicherheitsstandards, um deine Daten zu schützen.</p>
         </div>
       </div>
-    </div>gt
+    </div>
   );
 }
 
