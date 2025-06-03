@@ -40,9 +40,10 @@
   body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-image: url('https://source.unsplash.com/1600x900/?technology,workspace');
+    background-image: url('../Photo/plage.webp');
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
     background-attachment: fixed;
     min-height: 100vh;
   }

@@ -1,70 +1,67 @@
-import React from "react";
-import { FaBell, FaEnvelope, FaUserPlus, FaSearch, FaQuestionCircle, FaTh } from "react-icons/fa";
+import React, { useState } from "react";
+import AddMemberPopup from './AddMemberPopup';
+import './TopNavbar.css';
+import './AddMemberPopup.css';
 
 function TopNavBar() {
-  return (
-    <div style={styles.navbar}>
-      <div style={styles.left}></div>
+  const [activePopup, setActivePopup] = useState(null);
 
-      <div style={styles.right}>
-        <FaBell style={styles.icon} title="Benachrichtigungen" />
-        <div style={styles.iconWithBadge}>
-          <FaEnvelope style={styles.icon} title="Nachrichten" />
-          <span style={styles.badge}>1</span>
+  const togglePopup = (popupName) => {
+    setActivePopup(activePopup === popupName ? null : popupName);
+  };
+
+  return (
+    <div className="top-navbar">
+      <button onClick={() => togglePopup("notifications")}>🔔 Benachrichtigungen</button>
+      <button onClick={() => togglePopup("addMember")}>👥 Mitglied hinzufügen</button>
+      <button onClick={() => togglePopup("search")}>🔍 Suche öffnen</button>
+      <button onClick={() => togglePopup("help")}>❓ Hilfe anzeigen</button>
+      <button onClick={() => togglePopup("apps")}>📱 Apps öffnen</button>
+      <button onClick={() => togglePopup("profile")}>👤 Profil</button>
+
+      {activePopup === "notifications" && (
+        <div className="popup">📩 Du hast keine neuen Benachrichtigungen.</div>
+      )}
+
+      {activePopup === "addMember" && (
+        <AddMemberPopup
+          onClose={() => setActivePopup(null)}
+          onAdd={(member) => console.log("Mitglied hinzugefügt:", member)}
+        />
+      )}
+
+      {activePopup === "search" && (
+        <div className="popup">
+          <input type="text" placeholder="Suchen..." />
         </div>
-        <FaUserPlus style={styles.icon} title="Mitglied hinzufügen" />
-        <FaSearch style={styles.icon} title="Suche" />
-        <FaQuestionCircle style={styles.icon} title="Hilfe" />
-        <FaTh style={styles.icon} title="Apps" />
-        <div style={styles.profile}>C</div>
-      </div>
+      )}
+
+      {activePopup === "help" && (
+        <div className="popup">
+          <p>
+            🤔 Brauchst du Hilfe?{" "}
+            <a href="https://monday.com" target="_blank" rel="noopener noreferrer">
+              👉 Hier geht's zu monday.com
+            </a>
+          </p>
+        </div>
+      )}
+
+      {activePopup === "apps" && (
+        <div className="popup">
+          <p>Apps: Kalender, Chat, Dokumente ...</p>
+        </div>
+      )}
+
+      {activePopup === "profile" && (
+        <div className="popup">
+          <p>👋 Hallo, World!</p>
+          <button>Profil ansehen</button>
+          <button>Logout</button>
+        </div>
+      )}
     </div>
   );
 }
-
-const styles = {
-  navbar: {
-    backgroundColor: "#1f1f2e",
-    color: "white",
-    display: "flex",
-    justifyContent: "space-between",
-    padding: "10px 20px",
-    alignItems: "center",
-  },
-  right: {
-    display: "flex",
-    gap: "15px",
-    alignItems: "center",
-  },
-  icon: {
-    fontSize: "18px",
-    cursor: "pointer",
-  },
-  iconWithBadge: {
-    position: "relative",
-  },
-  badge: {
-    position: "absolute",
-    top: "-5px",
-    right: "-8px",
-    background: "red",
-    color: "white",
-    borderRadius: "50%",
-    fontSize: "10px",
-    padding: "2px 5px",
-  },
-  profile: {
-    backgroundColor: "#ccc",
-    color: "#333",
-    fontWeight: "bold",
-    borderRadius: "50%",
-    width: "28px",
-    height: "28px",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    cursor: "pointer",
-  },
-};
 
 export default TopNavBar;

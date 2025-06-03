@@ -72,14 +72,19 @@ function LandingPage({ onLogin }) {
         setLoginOpen(false);
         setUsernameLogin('');
         setPasswordLogin('');
-        localStorage.setItem('user', JSON.stringify(data.user)); //  User-Daten speichern 
-        onLogin();              // <-- WICHTIG: Loginstatus im App setzen
-        navigate('/dashboard'); // <-- Weiterleitung zum Dashboard
+        // Hier kannst du z.B. Token speichern oder weiterleiten
       } else {
         setLoginMessage('❌ Fehler: ' + data.message);
       }
     } catch (err) {
       setLoginMessage('❌ Netzwerkfehler: ' + err.message);
+    }
+  };
+
+  // "Enter" drücken im Login-Modal löst Login aus
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && isLoginOpen) {
+      handleLogin();
     }
   };
 
@@ -189,6 +194,8 @@ function LandingPage({ onLogin }) {
               className="modal-input"
               value={usernameLogin}
               onChange={e => setUsernameLogin(e.target.value)}
+              onKeyPress={handleKeyPress}
+              autoFocus
             />
             <input
               type="password"
@@ -196,6 +203,7 @@ function LandingPage({ onLogin }) {
               className="modal-input"
               value={passwordLogin}
               onChange={e => setPasswordLogin(e.target.value)}
+              onKeyPress={handleKeyPress}
             />
             <button className="modal-button" onClick={handleLogin}>Einloggen</button>
             {loginMessage && <p>{loginMessage}</p>}
@@ -261,6 +269,19 @@ function LandingPage({ onLogin }) {
           <p>Wir verwenden modernste Sicherheitsstandards, um deine Daten zu schützen.</p>
         </div>
       </div>
+
+      {/* Call to Action */}
+      <div className="cta-section">
+        <h2>Bereit, deine Produktivität zu steigern?</h2>
+        <button className="cta-button" onClick={() => setLoginOpen(true)}>Jetzt registrieren!</button>
+      </div>
+
+      {/* Footer */}
+      <footer className="footer">
+        <p>&copy; 2023 TaskHero. Alle Rechte vorbehalten.</p>
+        <a href="#">Datenschutzrichtlinie</a>
+        <a href="#">Nutzungsbedingungen</a>
+      </footer>
     </div>
   );
 }

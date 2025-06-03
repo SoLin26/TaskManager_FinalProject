@@ -1,0 +1,36 @@
+.popup {
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.popup a {
+  display: inline-block;
+  margin-left: 10px;
+  color: #0073e6;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.popup a:hover {
+  color: #005bb5;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+  
+  .top-navbar button {
+    margin-right: 10px;
+  }
+  
