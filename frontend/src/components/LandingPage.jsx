@@ -218,17 +218,17 @@ function LandingPage({ onLogin }) {
         <h2>Funktionen von TaskHero</h2>
         <div className="features">
           <div className="feature">
-            <img src="Aufgaben.png" alt="Aufgabenverwaltung" style={{ width: '100%', borderRadius: '8px' }} />
+            <img src="/Photo/Aufgaben.png" alt="Aufgabenverwaltung" style={{ width: '100%', borderRadius: '8px' }} />
             <h3>Aufgabenverwaltung</h3>
             <p>Verwalte deine Aufgaben einfach und effizient. Behalte den Überblick über alle deine To-Dos, setze Prioritäten und erledige sie schneller als je zuvor.</p>
           </div>
           <div className="feature">
-            <img src="Erinnerung.png" alt="Erinnerungen" style={{ width: '100%', borderRadius: '8px' }} />
+            <img src="./Photo/Erinnerung.png" alt="Erinnerungen" style={{ width: '100%', borderRadius: '8px' }} />
             <h3>Erinnerungen</h3>
             <p>Setze personalisierte Erinnerungen, damit du nie wieder eine wichtige Deadline verpasst – ganz egal ob privat oder beruflich.</p>
           </div>
           <div className="feature">
-            <img src="Todo.png" alt="Teamarbeit" style={{ width: '100%', borderRadius: '8px' }} />
+            <img src="./Photo/Todo.png" alt="Teamarbeit" style={{ width: '100%', borderRadius: '8px' }} />
             <h3>Teamarbeit</h3>
             <p>Teile Aufgaben, arbeite gemeinsam an Projekten und bleibe mit deinem Team auf dem Laufenden – alles an einem Ort.</p>
           </div>

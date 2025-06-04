@@ -97,14 +97,7 @@ function Dashboard() {
   return (
     <div>
       {/* Top bar mit Profil + Logout */}
-      <div style={styles.topbar}>
-        <span style={styles.userInfo}>
-          👤 Eingeloggt als: <strong>{localStorage.getItem("userEmail") || "Benutzer"}</strong>
-        </span>
-        <button onClick={handleLogout} style={styles.logoutButton}>
-          🚪 Logout
-        </button>
-      </div>
+     
 
       {/* Board */}
       <DragDropContext onDragEnd={onDragEnd}>
