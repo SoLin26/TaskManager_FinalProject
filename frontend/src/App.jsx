@@ -11,12 +11,10 @@ import TopNavBar from "./components/TopNavbar";
 import Dashboard from "./components/Dashboard";
 import LandingPage from "./components/LandingPage";
 import CalendarComponent from "./components/CalendarComponent";
+
 import NotificationsPage from "./page/NotificationsPage";
 import MessagesPage from "./page/MessagesPage";
 import ProfilePage from "./page/ProfilePage";
-import AddCardPage from "./pages/AddCardPage";
-import CopyListPage from "./pages/CopyListPage";
-
 
 import "./index.css";
 
@@ -24,20 +22,14 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null); // Userdaten speichern
+  const [user, setUser] = useState(null);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      // Optional: Hier Token prüfen, Userdaten aus Token holen
-      // Für Demo nehmen wir an, User ist eingeloggt
       setIsLoggedIn(true);
-
-      // Optional: User-Daten vom Backend holen oder aus Token extrahieren
-      // Zum Beispiel aus localStorage oder Token payload decodieren
-      // Hier Dummy-Daten:
       setUser({
         fullname: "Max Mustermann",
         username: "maxm",
@@ -63,7 +55,7 @@ function App() {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
     setUser(null);
-    navigate("/"); // Nach Logout auf LandingPage navigieren
+    navigate("/");
   };
 
   const LoggedInLayout = () => (

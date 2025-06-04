@@ -147,17 +147,18 @@ function Dashboard() {
                     style={styles.menuButton}
                   >
                     ⋯
-                  </button>
-                  {dropdownOpen === column && (
-                    <div style={styles.dropdownMenu}>
-                      <p onClick={() => alert("➕ Karte hinzufügen")}>➕ Karte hinzufügen</p>
-                      <p onClick={() => alert("📋 Liste kopieren")}>📋 Liste kopieren</p>
-                      <p onClick={() => alert("↔️ Liste verschieben")}>↔️ Liste verschieben</p>
-                      <p onClick={() => alert("📦 Alle Karten verschieben")}>📦 Alle Karten verschieben</p>
-                      <p onClick={() => alert("🗃️ Liste archivieren")}>🗃️ Liste archivieren</p>
-                      <p onClick={() => alert("⚙️ Regel erstellen")}>⚙️ Regel erstellen</p>
-                    </div>
-                  )}
+                    </button>
+{dropdownOpen === column && (
+  <div style={styles.dropdownMenu}>
+    <p onClick={() => navigate("/add-card")}>➕ Karte hinzufügen</p>
+    <p onClick={() => navigate("/copy-list")}>📋 Liste kopieren</p>
+    <p onClick={() => navigate("/move-list")}>↔️ Liste verschieben</p>
+    <p onClick={() => navigate("/move-all-cards")}>📦 Alle Karten verschieben</p>
+    <p onClick={() => navigate("/archive-list")}>🗃️ Liste archivieren</p>
+    <p onClick={() => navigate("/create-rule")}>⚙️ Regel erstellen</p>
+  </div>
+)}
+
                 </div>
               </div>
 
