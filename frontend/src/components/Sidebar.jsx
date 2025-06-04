@@ -6,9 +6,7 @@ import { FaBug, FaTasks, FaListUl, FaRocket } from "react-icons/fa";
 
 
 const categories = {
-  Arbeit: ["Büro", "Termine", "Kita / Schule / etc"],
-  "Privat/persönliches": ["Sport", "Einkauf", "Freizeitplanung"],
-  "Bildung/Studium": [],
+
 };
 
 function Sidebar() {
