@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   DragDropContext,
   Droppable,
   Draggable,
 } from "@hello-pangea/dnd";
+import { useNavigate } from "react-router-dom";
 
 const initialBoard = {
   "⭐ Level 1": [],
@@ -18,15 +19,29 @@ function Dashboard() {
   const [newTasks, setNewTasks] = useState(
     Object.fromEntries(Object.keys(initialBoard).map((key) => [key, ""]))
   );
-
   const [editableTitles, setEditableTitles] = useState(
     Object.fromEntries(Object.keys(initialBoard).map((key) => [key, false]))
   );
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const descriptions = {
     "⭐ Level 1": "📱 Première étape : apprendre les bases, installer l’environnement, créer une app simple.",
     "😃 Level 2": "🛠️ Améliorer la qualité de ton code et soumettre une app plus fiable.",
     "🦄 Level 3": "🚀 Automatiser, distribuer, et étendre tes connaissances Swift.",
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userEmail");
+    navigate("/login");
   };
 
   const handleAddTask = (column) => {
@@ -80,94 +95,129 @@ function Dashboard() {
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <div style={styles.board}>
-        {Object.entries(board).map(([column, tasks]) => (
-          <div key={column} style={styles.column}>
-            {editableTitles[column] ? (
+    <div>
+      {/* Top bar mit Profil + Logout */}
+      <div style={styles.topbar}>
+        <span style={styles.userInfo}>
+          👤 Eingeloggt als: <strong>{localStorage.getItem("userEmail") || "Benutzer"}</strong>
+        </span>
+        <button onClick={handleLogout} style={styles.logoutButton}>
+          🚪 Logout
+        </button>
+      </div>
+
+      {/* Board */}
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div style={styles.board}>
+          {Object.entries(board).map(([column, tasks]) => (
+            <div key={column} style={styles.column}>
+              {editableTitles[column] ? (
+                <input
+                  type="text"
+                  autoFocus
+                  defaultValue={column}
+                  onBlur={(e) => handleTitleChange(column, e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleTitleChange(column, e.target.value);
+                    }
+                  }}
+                  style={styles.input}
+                />
+              ) : (
+                <h3
+                  style={styles.columnTitle}
+                  onClick={() =>
+                    setEditableTitles({ ...editableTitles, [column]: true })
+                  }
+                >
+                  {column}
+                </h3>
+              )}
+
+              {descriptions[column] && (
+                <p style={styles.description}>{descriptions[column]}</p>
+              )}
+
+              <Droppable droppableId={column}>
+                {(provided) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    style={{ minHeight: "50px" }}
+                  >
+                    {tasks.map((task, index) => (
+                      <Draggable
+                        key={`${column}-${index}`}
+                        draggableId={`${column}-${index}`}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            style={{
+                              ...styles.card,
+                              ...provided.draggableProps.style,
+                            }}
+                          >
+                            {task}
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+
               <input
                 type="text"
-                autoFocus
-                defaultValue={column}
-                onBlur={(e) => handleTitleChange(column, e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleTitleChange(column, e.target.value);
-                  }
-                }}
+                placeholder="Nouvelle carte..."
+                value={newTasks[column]}
+                onChange={(e) =>
+                  setNewTasks({ ...newTasks, [column]: e.target.value })
+                }
                 style={styles.input}
               />
-            ) : (
-              <h3
-                style={styles.columnTitle}
-                onClick={() =>
-                  setEditableTitles({ ...editableTitles, [column]: true })
-                }
+              <button
+                onClick={() => handleAddTask(column)}
+                style={styles.addButton}
               >
-                {column}
-              </h3>
-            )}
-
-            {descriptions[column] && (
-              <p style={styles.description}>{descriptions[column]}</p>
-            )}
-
-            <Droppable droppableId={column}>
-              {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  style={{ minHeight: "50px" }}
-                >
-                  {tasks.map((task, index) => (
-                    <Draggable
-                      key={`${column}-${index}`}
-                      draggableId={`${column}-${index}`}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          style={{
-                            ...styles.card,
-                            ...provided.draggableProps.style,
-                          }}
-                        >
-                          {task}
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-
-            <input
-              type="text"
-              placeholder="Nouvelle carte..."
-              value={newTasks[column]}
-              onChange={(e) =>
-                setNewTasks({ ...newTasks, [column]: e.target.value })
-              }
-              style={styles.input}
-            />
-            <button
-              onClick={() => handleAddTask(column)}
-              style={styles.addButton}
-            >
-              ➕ Ajouter
-            </button>
-          </div>
-        ))}
-      </div>
-    </DragDropContext>
+                ➕ Ajouter
+              </button>
+            </div>
+          ))}
+        </div>
+      </DragDropContext>
+    </div>
   );
 }
 
 const styles = {
+  topbar: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#f8f9fa",
+    padding: "10px 20px",
+    borderBottom: "1px solid #ccc",
+  },
+  userInfo: {
+    fontWeight: "bold",
+    fontSize: "16px",
+    color: "#333",
+  },
+  logoutButton: {
+    padding: "8px 14px",
+    backgroundColor: "#dc3545",
+    color: "#fff",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontWeight: "bold",
+  },
   board: {
     display: "flex",
     gap: "20px",

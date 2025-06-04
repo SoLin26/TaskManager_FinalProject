@@ -1,13 +1,31 @@
-import React, { useState } from "react";
-import AddMemberPopup from './AddMemberPopup';
-import './TopNavbar.css';
-import './AddMemberPopup.css';
+import React, { useState, useEffect } from "react";
+import AddMemberPopup from "./AddMemberPopup";
+import "./TopNavbar.css";
+import "./AddMemberPopup.css";
 
-function TopNavBar() {
+function TopNavBar({ onLogout }) {
   const [activePopup, setActivePopup] = useState(null);
+  const [showProfileDetails, setShowProfileDetails] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // User-Daten aus localStorage laden
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   const togglePopup = (popupName) => {
+    if (popupName === "profile") {
+      setShowProfileDetails(false);
+    }
     setActivePopup(activePopup === popupName ? null : popupName);
+  };
+
+  const closeProfilePopup = () => {
+    setShowProfileDetails(false);
+    setActivePopup(null);
   };
 
   return (
@@ -54,10 +72,33 @@ function TopNavBar() {
       )}
 
       {activePopup === "profile" && (
-        <div className="popup">
-          <p>👋 Hallo, World!</p>
-          <button>Profil ansehen</button>
-          <button>Logout</button>
+        <div className="popup profile-popup">
+          {!showProfileDetails && (
+            <>
+              <p>👋 Hallo, {user?.fullname || "Nutzer"}!</p>
+              <button onClick={() => setShowProfileDetails(true)}>Profil ansehen</button>
+              <button
+                onClick={() => {
+                  closeProfilePopup();
+                  onLogout();
+                }}
+              >
+                Logout
+              </button>
+              <button onClick={closeProfilePopup}>Schließen</button>
+            </>
+          )}
+
+          {showProfileDetails && (
+            <>
+              <h3>Profil Details</h3>
+              <p><strong>Vollständiger Name:</strong> {user?.fullname || "-"}</p>
+              <p><strong>Username:</strong> {user?.username || "-"}</p>
+              <p><strong>Email:</strong> {user?.email || "-"}</p>
+              <button onClick={() => setShowProfileDetails(false)}>Zurück</button>
+              <button onClick={closeProfilePopup}>Schließen</button>
+            </>
+          )}
         </div>
       )}
     </div>
