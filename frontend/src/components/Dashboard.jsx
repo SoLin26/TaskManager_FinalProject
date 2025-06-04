@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-} from "@hello-pangea/dnd";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useNavigate } from "react-router-dom";
 
 const initialBoard = {
@@ -22,6 +18,7 @@ function Dashboard() {
   const [editableTitles, setEditableTitles] = useState(
     Object.fromEntries(Object.keys(initialBoard).map((key) => [key, false]))
   );
+  const [dropdownOpen, setDropdownOpen] = useState(null);
 
   const navigate = useNavigate();
 
@@ -31,6 +28,12 @@ function Dashboard() {
       navigate("/login");
     }
   }, [navigate]);
+
+  useEffect(() => {
+    const close = () => setDropdownOpen(null);
+    window.addEventListener("click", close);
+    return () => window.removeEventListener("click", close);
+  }, []);
 
   const descriptions = {
     "⭐ Level 1": "📱 Première étape : apprendre les bases, installer l’environnement, créer une app simple.",
@@ -95,38 +98,68 @@ function Dashboard() {
   };
 
   return (
-    <div>
-      {/* Top bar mit Profil + Logout */}
-     
+    <div style={styles.pageBackground}>
+      <div style={styles.topbar}>
+        <span style={styles.userInfo}>
+          👤 Eingeloggt als: <strong>{localStorage.getItem("userEmail") || "Benutzer"}</strong>
+        </span>
+        <button onClick={handleLogout} style={styles.logoutButton}>
+          🚪 Logout
+        </button>
+      </div>
 
-      {/* Board */}
       <DragDropContext onDragEnd={onDragEnd}>
         <div style={styles.board}>
           {Object.entries(board).map(([column, tasks]) => (
             <div key={column} style={styles.column}>
-              {editableTitles[column] ? (
-                <input
-                  type="text"
-                  autoFocus
-                  defaultValue={column}
-                  onBlur={(e) => handleTitleChange(column, e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      handleTitleChange(column, e.target.value);
-                    }
-                  }}
-                  style={styles.input}
-                />
-              ) : (
-                <h3
-                  style={styles.columnTitle}
-                  onClick={() =>
-                    setEditableTitles({ ...editableTitles, [column]: true })
-                  }
-                >
-                  {column}
-                </h3>
-              )}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                {editableTitles[column] ? (
+                  <input
+                    type="text"
+                    autoFocus
+                    defaultValue={column}
+                    onBlur={(e) => handleTitleChange(column, e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleTitleChange(column, e.target.value);
+                      }
+                    }}
+                    style={styles.input}
+                  />
+                ) : (
+                  <h3
+                    style={styles.columnTitle}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditableTitles({ ...editableTitles, [column]: true });
+                    }}
+                  >
+                    {column}
+                  </h3>
+                )}
+
+                <div style={{ position: "relative" }}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDropdownOpen(column);
+                    }}
+                    style={styles.menuButton}
+                  >
+                    ⋯
+                  </button>
+                  {dropdownOpen === column && (
+                    <div style={styles.dropdownMenu}>
+                      <p onClick={() => alert("➕ Karte hinzufügen")}>➕ Karte hinzufügen</p>
+                      <p onClick={() => alert("📋 Liste kopieren")}>📋 Liste kopieren</p>
+                      <p onClick={() => alert("↔️ Liste verschieben")}>↔️ Liste verschieben</p>
+                      <p onClick={() => alert("📦 Alle Karten verschieben")}>📦 Alle Karten verschieben</p>
+                      <p onClick={() => alert("🗃️ Liste archivieren")}>🗃️ Liste archivieren</p>
+                      <p onClick={() => alert("⚙️ Regel erstellen")}>⚙️ Regel erstellen</p>
+                    </div>
+                  )}
+                </div>
+              </div>
 
               {descriptions[column] && (
                 <p style={styles.description}>{descriptions[column]}</p>
@@ -189,6 +222,12 @@ function Dashboard() {
 }
 
 const styles = {
+  pageBackground: {
+    backgroundImage: 'url("/backgrounds/bird.jpg")',
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    minHeight: "100vh",
+  },
   topbar: {
     display: "flex",
     justifyContent: "space-between",
@@ -216,20 +255,22 @@ const styles = {
     gap: "20px",
     padding: "20px",
     overflowX: "auto",
+    height: "calc(100vh - 60px)",
   },
   column: {
-    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    backgroundColor: "rgba(255, 255, 255, 0.92)",
     borderRadius: "15px",
     padding: "15px",
-    width: "270px",
+    width: "280px",
     minHeight: "350px",
     boxShadow: "0 4px 10px rgba(0, 0, 0, 0.15)",
     backdropFilter: "blur(4px)",
+    position: "relative",
   },
   columnTitle: {
     fontSize: "18px",
     fontWeight: "bold",
-    marginBottom: "10px",
+    marginBottom: "5px",
     color: "#333",
     cursor: "pointer",
   },
@@ -266,6 +307,25 @@ const styles = {
     borderRadius: "4px",
     cursor: "pointer",
     fontWeight: "bold",
+  },
+  menuButton: {
+    background: "transparent",
+    border: "none",
+    fontSize: "20px",
+    cursor: "pointer",
+    padding: "0 5px",
+  },
+  dropdownMenu: {
+    position: "absolute",
+    top: "30px",
+    right: 0,
+    background: "#fff",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
+    zIndex: 1000,
+    padding: "10px",
+    minWidth: "180px",
   },
 };
 

@@ -14,6 +14,9 @@ import CalendarComponent from "./components/CalendarComponent";
 import NotificationsPage from "./page/NotificationsPage";
 import MessagesPage from "./page/MessagesPage";
 import ProfilePage from "./page/ProfilePage";
+import AddCardPage from "./pages/AddCardPage";
+import CopyListPage from "./pages/CopyListPage";
+
 
 import "./index.css";
 
