@@ -16,9 +16,9 @@ router.get("/", auth, async (req, res) => {
 
 // POST /neues Todo speichern
 router.post("/", auth, async (req, res) => {
-  const { title, column } = req.body;
+  const { title, column, dueDate } = req.body;  // dueDate hinzufügen
   try {
-    const todo = new Todo({ userId: req.user.id, title, column });
+    const todo = new Todo({ userId: req.user.id, title, column, dueDate });
     await todo.save();
     res.status(201).json(todo);
   } catch (err) {
@@ -26,13 +26,14 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
+
 // PUT / Todo aktualisieren
 router.put("/:id", auth, async (req, res) => {
-  const { title, column } = req.body;
+  const { title, column, dueDate } = req.body;  // dueDate hinzufügen
   try {
     const updated = await Todo.findOneAndUpdate(
       { _id: req.params.id, userId: req.user.id },
-      { title, column },
+      { title, column, dueDate },
       { new: true }
     );
     if (!updated) return res.status(404).json({ message: "Todo nicht gefunden" });
@@ -41,6 +42,7 @@ router.put("/:id", auth, async (req, res) => {
     res.status(500).json({ message: "Aktualisierung fehlgeschlagen" });
   }
 });
+
 
 // DELETE / – Todo löschen
 router.delete("/:id", auth, async (req, res) => {
