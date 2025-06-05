@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import Member from "./models/Member.js";
 import authenticateRoute from "./routes/authenticateRoute.js";
 import authenticate from "./middleware/authenticate.js";
+import todoRoutes from "./routes/todo.js"; // Todo-Routen importieren
 
 // 📦 Config
 dotenv.config();
@@ -27,8 +28,10 @@ app.use(express.json());
 // 🟢 Authentifizierungs-Routen
 app.use("/user", authenticateRoute);
 
-// 🟢 Beispiel-Aufgabenrouten (mit auth)
-app.use("/api/tasks", authenticate);
+// 🟢 Todo-Routen (mit Authentifizierung)
+app.use("/api/todos", authenticate, todoRoutes);
+
+// 🟢 Beispiel-Aufgabenrouten (mit auth) – falls du die behalten möchtest
 let tasks = [];
 
 app.post("/api/tasks", (req, res) => {

@@ -7,20 +7,21 @@ const authenticate = (req, res, next) => {
     return res.status(401).json({ message: 'Kein Token gefunden, Zugriff verweigert' });
   }
 
-  const token = authHeader.split(' ')[1]; // "Bearer TOKEN"
+  const [scheme, token] = authHeader.split(' ');
 
-  if (!token) {
-    return res.status(401).json({ message: 'Kein Token gefunden, Zugriff verweigert' });
+  if (scheme !== 'Bearer' || !token) {
+    return res.status(401).json({ message: 'Ungültiges Tokenformat' });
   }
 
   try {
     const secret = process.env.JWT_SECRET;
     const decoded = jwt.verify(token, secret);
-    req.user = decoded; // User-Daten aus Token speichern
+    req.user = decoded;
     next();
   } catch (err) {
     return res.status(401).json({ message: 'Token ungültig oder abgelaufen' });
   }
 };
+
 
 export default authenticate;

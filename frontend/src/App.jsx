@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
@@ -25,6 +25,7 @@ function App() {
   const [user, setUser] = useState(null);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -58,29 +59,26 @@ function App() {
     navigate("/");
   };
 
-  const LoggedInLayout = () => (
-    <div className="app">
-      <TopNavBar user={user} onLogout={handleLogout} />
-      <Header toggleDarkMode={() => setDarkMode(!darkMode)} />
-      <div className="main-content">
-        <Sidebar />
-        <main className="content">
-          <BackButton />
-          <CalendarComponent />
-          <Routes>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/tasks" element={<TaskList />} />
-            <Route path="/forum" element={<TaskForum />} />
-            <Route path="/notifications" element={<NotificationsPage />} />
-            <Route path="/messages" element={<MessagesPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
-        </main>
+  const LoggedInLayout = ({ children }) => {
+    // Kalender nur auf Dashboard anzeigen
+    const showCalendar = location.pathname === "/dashboard";
+
+    return (
+      <div className="app">
+        <TopNavBar user={user} onLogout={handleLogout} />
+        <Header toggleDarkMode={() => setDarkMode(!darkMode)} />
+        <div className="main-content">
+          <Sidebar />
+          <main className="content">
+            <BackButton />
+            {showCalendar && <CalendarComponent />}
+            {children}
+          </main>
+        </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
-  );
+    );
+  };
 
   if (loading) {
     return <div>Lädt...</div>;
@@ -98,10 +96,43 @@ function App() {
           )
         }
       />
-      <Route
-        path="/*"
-        element={isLoggedIn ? <LoggedInLayout /> : <Navigate to="/" replace />}
-      />
+
+      {isLoggedIn && (
+        <>
+          <Route
+            path="/dashboard"
+            element={<LoggedInLayout><Dashboard /></LoggedInLayout>}
+          />
+          <Route
+            path="/tasks"
+            element={<LoggedInLayout><TaskList /></LoggedInLayout>}
+          />
+          <Route
+            path="/forum"
+            element={<LoggedInLayout><TaskForum /></LoggedInLayout>}
+          />
+          <Route
+            path="/notifications"
+            element={<LoggedInLayout><NotificationsPage /></LoggedInLayout>}
+          />
+          <Route
+            path="/messages"
+            element={<LoggedInLayout><MessagesPage /></LoggedInLayout>}
+          />
+          <Route
+            path="/profile"
+            element={<LoggedInLayout><ProfilePage /></LoggedInLayout>}
+          />
+          <Route
+            path="*"
+            element={<Navigate to="/dashboard" replace />}
+          />
+        </>
+      )}
+
+      {!isLoggedIn && (
+        <Route path="*" element={<Navigate to="/" replace />} />
+      )}
     </Routes>
   );
 }

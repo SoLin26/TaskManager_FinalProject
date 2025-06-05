@@ -56,32 +56,39 @@ function LandingPage({ onLogin }) {
   };
 
   // Login an Backend schicken
-  const handleLogin = async () => {
-    try {
-      const res = await fetch('http://localhost:5000/user/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: usernameLogin,
-          password: passwordLogin,
-        }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setLoginMessage(`✅ Login erfolgreich! Willkommen, ${data.user.fullname}`);
-        setLoginOpen(false);
-        setUsernameLogin('');
-        setPasswordLogin('');
-        localStorage.setItem('user', JSON.stringify(data.user));
-        onLogin();              // Loginstatus im App setzen
-        navigate('/dashboard'); // Weiterleitung zum Dashboard
-      } else {
-        setLoginMessage('❌ Fehler: ' + data.message);
-      }
-    } catch (err) {
-      setLoginMessage('❌ Netzwerkfehler: ' + err.message);
+ const handleLogin = async () => {
+  try {
+    const res = await fetch('http://localhost:5000/user/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: usernameLogin,
+        password: passwordLogin,
+      }),
+    });
+    const data = await res.json();
+    if (res.ok && data.token) {
+      setLoginMessage(`✅ Login erfolgreich! Willkommen, ${data.user.fullname}`);
+      setLoginOpen(false);
+      setUsernameLogin('');
+      setPasswordLogin('');
+
+      // WICHTIG: Token speichern
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      // App informieren
+      onLogin(data.token, data.user);
+
+      navigate('/dashboard');
+    } else {
+      setLoginMessage('❌ Fehler: ' + (data.message || 'Unbekannter Fehler'));
     }
-  };
+  } catch (err) {
+    setLoginMessage('❌ Netzwerkfehler: ' + err.message);
+  }
+};
+
 
   // "Enter" drücken im Login-Modal löst Login aus
   const handleKeyPress = (e) => {
