@@ -1,6 +1,6 @@
 import express from "express";
 import Todo from "../models/Todo.js";
-import auth from "../middleware/auth.js";
+import auth from "../middleware/authenticate.js";
 
 const router = express.Router();
 

@@ -5,12 +5,12 @@ import mongoose from "mongoose";
 import Member from "./models/Member.js";
 import authenticateRoute from "./routes/authenticateRoute.js";
 import authenticate from "./middleware/authenticate.js";
-import todoRoutes from "./routes/todo.js"; // Todo-Routen importieren
+import todoRoutes from "./routes/todos.js"; // Todo-Routen importieren
 
 // 📦 Config
 dotenv.config();
 const mongoURI = process.env.MONGODB_URI;
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 5000;
 
 mongoose
   .connect(mongoURI)
@@ -28,8 +28,8 @@ app.use(express.json());
 // 🟢 Authentifizierungs-Routen
 app.use("/user", authenticateRoute);
 
-// 🟢 Todo-Routen (mit Authentifizierung)
-app.use("/api/todos", authenticate, todoRoutes);
+// 🟢 Todo-Routen (ohne Authentifizierung da in todo.js)
+app.use("/api/todos", todoRoutes);
 
 // 🟢 Beispiel-Aufgabenrouten (mit auth) – falls du die behalten möchtest
 let tasks = [];
