@@ -1,112 +1,62 @@
 import { useState } from "react";
 import './AddMemberPopup.css';
 
-function AddMemberPopup({ onClose, onAdd }) {
-  const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState(null);
-  const [confirmation, setConfirmation] = useState(false);
-  const [suggestions, setSuggestions] = useState([
-    "Anna Müller",
-    "Sonja Linhard",
-    "Se-a",
-    "Chaima Mnasri",
-    "Emma Wagner",
-    "Fatima Ali",
-  ]);
+export default function AddMemberPage() {
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("Mitglied");
+  const [message, setMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const filteredUsers = suggestions.filter(user =>
-    user.toLowerCase().includes(search.toLowerCase())
-  );
+  const handleInvite = async () => {
+    if (!email.includes("@")) {
+      setMessage("❌ Ungültige E-Mail-Adresse");
+      return;
+    }
 
-  const handleAdd = async () => {
-    if (!selected) return;
-
+    setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/members", {
+      const res = await fetch("http://localhost:5000/api/invite", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name: selected }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, role }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        alert("❌ Fehler: " + errorData.error);
-        return;
+      if (!res.ok) {
+        const error = await res.json();
+        setMessage("❌ Fehler: " + error.message);
+      } else {
+        setMessage("✅ Einladung gesendet an " + email);
+        setEmail("");
       }
-
-      const data = await response.json();
-      console.log("✅ Mitglied gespeichert:", data);
-
-      if (!suggestions.includes(selected)) {
-        setSuggestions([...suggestions, selected]);
-      }
-
-      onAdd(selected);
-      setConfirmation(true);
-      setSearch("");
-      setSelected(null);
-
-      setTimeout(() => {
-        setConfirmation(false);
-        onClose();
-      }, 1000);
     } catch (err) {
-      alert("❌ Fehler beim Speichern");
+      setMessage("❌ Netzwerkfehler");
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="popup-container">
-      <div className="popup-header">
-        <span>👤 Mitglied hinzufügen</span>
-        <button className="close-btn" onClick={onClose}>×</button>
-      </div>
+    <div className="invite-container">
+      <h2>👥 Mitglied einladen</h2>
 
-      <div className="popup-body">
-        {confirmation && (
-          <div className="confirmation-message">✅ Mitglied hinzugefügt!</div>
-        )}
+      <input
+        type="email"
+        placeholder="E-Mail-Adresse eingeben"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
 
-        <input
-          type="text"
-          placeholder="Mitgliedsname eingeben"
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setSelected(null);
-          }}
-        />
+      <select value={role} onChange={(e) => setRole(e.target.value)}>
+        <option value="Mitglied">Mitglied</option>
+        <option value="Admin">Admin</option>
+      </select>
 
-        {search && (
-          <ul className="suggestion-list">
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map((user, index) => (
-                <li
-                  key={index}
-                  onClick={() => {
-                    setSearch(user);
-                    setSelected(user);
-                  }}
-                  className={selected === user ? "selected" : ""}
-                >
-                  {user}
-                </li>
-              ))
-            ) : (
-              <li className="no-result">Kein Ergebnis</li>
-            )}
-          </ul>
-        )}
+      <button onClick={handleInvite} disabled={loading || !email}>
+        📩 Einladung senden
+      </button>
 
-        <button className="add-btn" disabled={!selected} onClick={handleAdd}>
-          ➕ Hinzufügen
-        </button>
-      </div>
+      {message && <p className="info-message">{message}</p>}
     </div>
   );
 }
-
-export default AddMemberPopup;

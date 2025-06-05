@@ -11,7 +11,7 @@ import TopNavBar from "./components/TopNavbar";
 import Dashboard from "./components/Dashboard";
 import LandingPage from "./components/LandingPage";
 import CalendarComponent from "./components/CalendarComponent";
-
+import AddMemberPopup from "./components/AddMemberPopup";
 import NotificationsPage from "./page/NotificationsPage";
 import MessagesPage from "./page/MessagesPage";
 import ProfilePage from "./page/ProfilePage";
@@ -129,7 +129,7 @@ function App() {
           />
         </>
       )}
-
+          <Route path="/Add" element={<AddMemberPopup />} />
       {!isLoggedIn && (
         <Route path="*" element={<Navigate to="/" replace />} />
       )}

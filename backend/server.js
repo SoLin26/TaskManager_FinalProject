@@ -54,6 +54,17 @@ app.post("/api/tasks", (req, res) => {
 app.get("/api/tasks", (req, res) => {
   res.json(tasks);
 });
+app.post("/api/invite", (req, res) => {
+  const { email, role } = req.body;
+
+  if (!email || !email.includes("@")) {
+    return res.status(400).json({ message: "Ungültige E-Mail" });
+  }
+
+  // Simulierter Mailversand
+  console.log(`📨 Einladung an ${email} als ${role} gesendet.`);
+  res.status(200).json({ success: true });
+});
 
 // 🔵 Liste aller Mitglieder
 app.get("/api/members", async (req, res) => {
