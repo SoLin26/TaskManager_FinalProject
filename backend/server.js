@@ -28,10 +28,10 @@ app.use(express.json());
 // 🟢 Authentifizierungs-Routen
 app.use("/user", authenticateRoute);
 
-// 🟢 Todo-Routen (ohne Authentifizierung da in todo.js)
+// 🟢 Todo-Routen (mit Authentifizierung in todo.js)
 app.use("/api/todos", todoRoutes);
 
-// 🟢 Beispiel-Aufgabenrouten (mit auth) – falls du die behalten möchtest
+// 🟢 Beispiel-Aufgabenrouten (falls gewünscht)
 let tasks = [];
 
 app.post("/api/tasks", (req, res) => {
@@ -54,6 +54,7 @@ app.post("/api/tasks", (req, res) => {
 app.get("/api/tasks", (req, res) => {
   res.json(tasks);
 });
+
 app.post("/api/invite", (req, res) => {
   const { email, role } = req.body;
 
