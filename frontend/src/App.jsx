@@ -12,9 +12,15 @@ import Dashboard from "./components/Dashboard";
 import LandingPage from "./components/LandingPage";
 import CalendarComponent from "./components/CalendarComponent";
 import AddMemberPopup from "./components/AddMemberPopup";
+
+// ✅ KORRIGIERTE IMPORTS AUS DEM „pages“-ORDNER
 import NotificationsPage from "./page/NotificationsPage";
 import MessagesPage from "./page/MessagesPage";
 import ProfilePage from "./page/ProfilePage";
+import BoardsPage from "./page/BoardsPage";
+
+// Board Detail (bleibt im components-Ordner, wenn es dort liegt)
+import BoardDetail from "./components/BoardDetail";
 
 import "./index.css";
 
@@ -60,7 +66,6 @@ function App() {
   };
 
   const LoggedInLayout = ({ children }) => {
-    // Kalender nur auf Dashboard anzeigen
     const showCalendar = location.pathname === "/dashboard";
 
     return (
@@ -123,13 +128,23 @@ function App() {
             path="/profile"
             element={<LoggedInLayout><ProfilePage /></LoggedInLayout>}
           />
+
+          {/* ✅ Boards */}
           <Route
-            path="*"
-            element={<Navigate to="/dashboard" replace />}
+            path="/boards"
+            element={<LoggedInLayout><BoardsPage /></LoggedInLayout>}
           />
+          <Route
+            path="/boards/:id"
+            element={<LoggedInLayout><BoardDetail /></LoggedInLayout>}
+          />
+
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>
       )}
-          <Route path="/Add" element={<AddMemberPopup />} />
+
+      {/* Öffentlich */}
+      <Route path="/Add" element={<AddMemberPopup />} />
       {!isLoggedIn && (
         <Route path="*" element={<Navigate to="/" replace />} />
       )}

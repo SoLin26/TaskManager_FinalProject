@@ -6,6 +6,7 @@ import Member from "./models/Member.js";
 import authenticateRoute from "./routes/authenticateRoute.js";
 import authenticate from "./middleware/authenticate.js";
 import todoRoutes from "./routes/todos.js"; // Todo-Routen importieren
+import boardRoutes from "./routes/boards.js";
 
 // 📦 Config
 dotenv.config();
@@ -107,3 +108,5 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Backend läuft auf http://localhost:${PORT}`);
 });
+
+app.use("/api/boards", boardRoutes);

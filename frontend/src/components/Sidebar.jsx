@@ -19,6 +19,11 @@ function Sidebar() {
         <FaRocket /> Sprints
       </Link>
       <Link to="/dashboard">📋 Übersicht (Dashboard)</Link>
+      <li>
+  <Link to="/boards">Boards</Link>
+</li>
+
+
 
       {Object.entries(categories).map(([cat, subs]) => (
         <div key={cat}>
