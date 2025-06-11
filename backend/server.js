@@ -8,8 +8,8 @@ import authenticate from "./middleware/authenticate.js";
 import todoRoutes from "./routes/todos.js"; // Todo-Routen importieren
 import boardRoutes from "./routes/boards.js";
 
-// 📦 Config
 dotenv.config();
+
 const mongoURI = process.env.MONGODB_URI;
 const PORT = process.env.PORT || 5000;
 
@@ -32,7 +32,7 @@ app.use("/user", authenticateRoute);
 // 🟢 Todo-Routen (mit Authentifizierung in todo.js)
 app.use("/api/todos", todoRoutes);
 
-// 🟢 Beispiel-Aufgabenrouten (falls gewünscht)
+// 🟢 Beispiel-Aufgabenrouten
 let tasks = [];
 
 app.post("/api/tasks", (req, res) => {
@@ -56,6 +56,7 @@ app.get("/api/tasks", (req, res) => {
   res.json(tasks);
 });
 
+// 📨 Einladung simulieren (à améliorer avec nodemailer)
 app.post("/api/invite", (req, res) => {
   const { email, role } = req.body;
 
@@ -63,7 +64,6 @@ app.post("/api/invite", (req, res) => {
     return res.status(400).json({ message: "Ungültige E-Mail" });
   }
 
-  // Simulierter Mailversand
   console.log(`📨 Einladung an ${email} als ${role} gesendet.`);
   res.status(200).json({ success: true });
 });
@@ -78,7 +78,7 @@ app.get("/api/members", async (req, res) => {
   }
 });
 
-// 🟢 Neues Mitglied hinzufügen
+// ➕ Neues Mitglied hinzufügen
 app.post("/api/members", async (req, res) => {
   const { name } = req.body;
   if (!name) {
