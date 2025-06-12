@@ -2,41 +2,25 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FaTasks, FaListUl, FaRocket } from "react-icons/fa";
 
-const categories = {}; // kannst du später befüllen, wenn du willst
-
 function Sidebar() {
   return (
     <aside className="sidebar">
       <h2>Kategorien</h2>
 
-      <Link to="/tasks">
-        <FaTasks /> Aufgaben
-      </Link>
-      <Link to="/epics">
-        <FaListUl /> Epics
-      </Link>
-      <Link to="/sprints">
-        <FaRocket /> Sprints
-      </Link>
       <Link to="/dashboard">📋 Übersicht (Dashboard)</Link>
-      <li>
-  <Link to="/boards">Boards</Link>
-</li>
+      <Link to="/tasks"><FaTasks /> Aufgaben</Link>
+      <Link to="/epics"><FaListUl /> Epics</Link>
+      <Link to="/sprints"><FaRocket /> Sprints</Link>
 
-
-
-      {Object.entries(categories).map(([cat, subs]) => (
-        <div key={cat}>
-          <strong>{cat}</strong>
-          <ul>
-            {subs.map((sub) => (
-              <li key={sub}>
-                <Link to={`/tasks?cat=${cat}&sub=${sub}`}>{sub}</Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      <h3>Boards</h3>
+      <ul>
+        <li><Link to="/add-card">➕ Karte hinzufügen</Link></li>
+        <li><Link to="/copy-list">📋 Liste kopieren</Link></li>
+        <li><Link to="/move-list">↔️ Liste verschieben</Link></li>
+        <li><Link to="/move-all-cards">📦 Alle Karten verschieben</Link></li>
+        <li><Link to="/archive-list">🗃️ Liste archivieren</Link></li>
+        <li><Link to="/create-rule">⚙️ Regel erstellen</Link></li>
+      </ul>
     </aside>
   );
 }

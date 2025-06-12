@@ -47,11 +47,33 @@ function Dashboard() {
     navigate("/login");
   };
 
-  const handleAddTask = (column) => {
-    if (!newTasks[column]) return;
-    const updatedColumn = [...board[column], newTasks[column]];
-    setBoard({ ...board, [column]: updatedColumn });
-    setNewTasks({ ...newTasks, [column]: "" });
+  const handleAddTask = async (column) => {
+    const task = newTasks[column];
+    if (!task.trim()) return;
+
+    try {
+      const response = await fetch("http://localhost:5000/api/column/add-card", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ column: column, task: task }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Erreur d'ajout");
+      }
+
+      const data = await response.json();
+      const updatedColumn = [...board[column], task];
+      setBoard({ ...board, [column]: updatedColumn });
+      setNewTasks({ ...newTasks, [column]: "" });
+    } catch (err) {
+      console.error("❌ Erreur API :", err.message);
+      alert("Erreur lors de l’ajout de la tâche !");
+    }
   };
 
   const onDragEnd = (result) => {
@@ -103,9 +125,7 @@ function Dashboard() {
         <span style={styles.userInfo}>
           👤 Eingeloggt als: <strong>{localStorage.getItem("userEmail") || "Benutzer"}</strong>
         </span>
-        <button onClick={handleLogout} style={styles.logoutButton}>
-          🚪 Logout
-        </button>
+        <button onClick={handleLogout} style={styles.logoutButton}>🚪 Logout</button>
       </div>
 
       <DragDropContext onDragEnd={onDragEnd}>
@@ -147,24 +167,22 @@ function Dashboard() {
                     style={styles.menuButton}
                   >
                     ⋯
-                    </button>
-{dropdownOpen === column && (
-  <div style={styles.dropdownMenu}>
-    <p onClick={() => navigate("/add-card")}>➕ Karte hinzufügen</p>
-    <p onClick={() => navigate("/copy-list")}>📋 Liste kopieren</p>
-    <p onClick={() => navigate("/move-list")}>↔️ Liste verschieben</p>
-    <p onClick={() => navigate("/move-all-cards")}>📦 Alle Karten verschieben</p>
-    <p onClick={() => navigate("/archive-list")}>🗃️ Liste archivieren</p>
-    <p onClick={() => navigate("/create-rule")}>⚙️ Regel erstellen</p>
-  </div>
-)}
+                  </button>
 
+                  {dropdownOpen === column && (
+                    <div style={styles.dropdownMenu}>
+                      <button style={styles.dropdownMenuButton} onClick={() => navigate("/add-card")}>➕ Karte hinzufügen</button>
+                      <button style={styles.dropdownMenuButton} onClick={() => navigate("/copy-list")}>📋 Liste kopieren</button>
+                      <button style={styles.dropdownMenuButton} onClick={() => navigate("/move-list")}>↔️ Liste verschieben</button>
+                      <button style={styles.dropdownMenuButton} onClick={() => navigate("/move-all-cards")}>📦 Alle Karten verschieben</button>
+                      <button style={styles.dropdownMenuButton} onClick={() => navigate("/archive-list")}>🗃️ Liste archivieren</button>
+                      <button style={styles.dropdownMenuButton} onClick={() => navigate("/create-rule")}>⚙️ Regel erstellen</button>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {descriptions[column] && (
-                <p style={styles.description}>{descriptions[column]}</p>
-              )}
+              {descriptions[column] && <p style={styles.description}>{descriptions[column]}</p>}
 
               <Droppable droppableId={column}>
                 {(provided) => (
@@ -203,9 +221,7 @@ function Dashboard() {
                 type="text"
                 placeholder="Nouvelle carte..."
                 value={newTasks[column]}
-                onChange={(e) =>
-                  setNewTasks({ ...newTasks, [column]: e.target.value })
-                }
+                onChange={(e) => setNewTasks({ ...newTasks, [column]: e.target.value })}
                 style={styles.input}
               />
               <button
@@ -224,7 +240,6 @@ function Dashboard() {
 
 const styles = {
   pageBackground: {
-    backgroundImage: 'url("/backgrounds/bird.jpg")',
     backgroundSize: "cover",
     backgroundPosition: "center",
     minHeight: "100vh",
@@ -327,6 +342,17 @@ const styles = {
     zIndex: 1000,
     padding: "10px",
     minWidth: "180px",
+  },
+  dropdownMenuButton: {
+    width: "100%",
+    padding: "8px",
+    marginBottom: "6px",
+    backgroundColor: "#f1f1f1",
+    border: "1px solid #ccc",
+    borderRadius: "6px",
+    textAlign: "left",
+    cursor: "pointer",
+    fontWeight: "500",
   },
 };
 
