@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
+import axios from "axios";
 
+// Komponenten
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Footer from "./components/Footer";
@@ -12,20 +20,10 @@ import Dashboard from "./components/Dashboard";
 import LandingPage from "./components/LandingPage";
 import CalendarComponent from "./components/CalendarComponent";
 import AddMemberPopup from "./components/AddMemberPopup";
-
-// ✅ Pages
 import NotificationsPage from "./page/NotificationsPage";
 import MessagesPage from "./page/MessagesPage";
 import ProfilePage from "./page/ProfilePage";
 import BoardsPage from "./page/BoardsPage";
-import AddCardPage from "../src/page/AddCardPage";
-import CopyListPage from "../src/page/CopyListPage";
-import MoveListPage from "../src/page/MoveListPage";
-import MoveAllCardsPage from "../src/page/MoveAllCardsPage";
-import ArchiveListPage from "../src/page/ArchiveListPage";
-import CreateRulePage from "../src/page/CreateRulePage";
-
-// ✅ Components
 import BoardDetail from "./components/BoardDetail";
 
 import "./index.css";
@@ -39,40 +37,59 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Auth-Status beim Laden prüfen
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setIsLoggedIn(true);
-      setUser({
-        fullname: "Max Mustermann",
-        username: "maxm",
-        email: "max@beispiel.de",
-        profileImage: "https://www.w3schools.com/howto/img_avatar.png",
-      });
-    }
-    setLoading(false);
+    const checkLogin = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/auth/me", {
+          withCredentials: true,
+        });
+        setUser(res.data.user);
+        setIsLoggedIn(true);
+      } catch (error) {
+        console.log("Nicht eingeloggt:", error.message);
+        setUser(null);
+        setIsLoggedIn(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkLogin();
   }, []);
 
+  // Dark Mode anwenden
   useEffect(() => {
     document.body.className = darkMode ? "dark" : "";
   }, [darkMode]);
 
-  const handleLogin = (token, userData) => {
-    localStorage.setItem("token", token);
+  // Login erfolgreich
+  const handleLogin = (userData) => {
     setIsLoggedIn(true);
     setUser(userData);
     navigate("/dashboard");
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
+  // Logout durchführen
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:5000/api/auth/logout",
+        {},
+        { withCredentials: true }
+      );
+    } catch (e) {
+      console.error("Logout fehlgeschlagen", e);
+    }
     setIsLoggedIn(false);
     setUser(null);
     navigate("/");
   };
 
+  // Layout für eingeloggte Nutzer
   const LoggedInLayout = ({ children }) => {
     const showCalendar = location.pathname === "/dashboard";
+
     return (
       <div className="app">
         <TopNavBar user={user} onLogout={handleLogout} />
@@ -90,52 +107,62 @@ function App() {
     );
   };
 
+  // Während Auth-Status geladen wird
   if (loading) {
     return <div>Lädt...</div>;
   }
 
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          isLoggedIn ? (
-            <Navigate to="/dashboard" replace />
-          ) : (
-            <LandingPage onLogin={handleLogin} />
-          )
-        }
-      />
+      {/* LandingPage öffentlich */}
+      <Route path="/" element={<LandingPage onLogin={handleLogin} />} />
 
+      {/* Geschützte Routen */}
       {isLoggedIn ? (
         <>
-          <Route path="/dashboard" element={<LoggedInLayout><Dashboard /></LoggedInLayout>} />
-          <Route path="/tasks" element={<LoggedInLayout><TaskList /></LoggedInLayout>} />
-          <Route path="/forum" element={<LoggedInLayout><TaskForum /></LoggedInLayout>} />
-          <Route path="/notifications" element={<LoggedInLayout><NotificationsPage /></LoggedInLayout>} />
-          <Route path="/messages" element={<LoggedInLayout><MessagesPage /></LoggedInLayout>} />
-          <Route path="/profile" element={<LoggedInLayout><ProfilePage /></LoggedInLayout>} />
-          <Route path="/boards" element={<LoggedInLayout><BoardsPage /></LoggedInLayout>} />
-          <Route path="/boards/:id" element={<LoggedInLayout><BoardDetail /></LoggedInLayout>} />
+          <Route
+            path="/dashboard"
+            element={<LoggedInLayout><Dashboard /></LoggedInLayout>}
+          />
+          <Route
+            path="/tasks"
+            element={<LoggedInLayout><TaskList /></LoggedInLayout>}
+          />
+          <Route
+            path="/forum"
+            element={<LoggedInLayout><TaskForum /></LoggedInLayout>}
+          />
+          <Route
+            path="/notifications"
+            element={<LoggedInLayout><NotificationsPage /></LoggedInLayout>}
+          />
+          <Route
+            path="/messages"
+            element={<LoggedInLayout><MessagesPage /></LoggedInLayout>}
+          />
+          <Route
+            path="/profile"
+            element={<LoggedInLayout><ProfilePage /></LoggedInLayout>}
+          />
+          <Route
+            path="/boards"
+            element={<LoggedInLayout><BoardsPage /></LoggedInLayout>}
+          />
+          <Route
+            path="/boards/:id"
+            element={<LoggedInLayout><BoardDetail /></LoggedInLayout>}
+          />
 
-          {/* Pages liées aux actions de colonnes */}
-          <Route path="/add-card" element={<LoggedInLayout><AddCardPage /></LoggedInLayout>} />
-          <Route path="/copy-list" element={<LoggedInLayout><CopyListPage /></LoggedInLayout>} />
-          <Route path="/move-list" element={<LoggedInLayout><MoveListPage /></LoggedInLayout>} />
-          <Route path="/move-all-cards" element={<LoggedInLayout><MoveAllCardsPage /></LoggedInLayout>} />
-          <Route path="/archive-list" element={<LoggedInLayout><ArchiveListPage /></LoggedInLayout>} />
-          <Route path="/create-rule" element={<LoggedInLayout><CreateRulePage /></LoggedInLayout>} />
-
-          {/* Catch-all route */}
+          {/* Fallback für eingeloggte Nutzer */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>
       ) : (
-        <>
-          {/* Page publique pour ajout de membres */}
-          <Route path="/add" element={<AddMemberPopup />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </>
+        // Fallback für nicht eingeloggte Nutzer
+        <Route path="*" element={<Navigate to="/" replace />} />
       )}
+
+      {/* Öffentlich zugänglicher Popup-Test */}
+      <Route path="/Add" element={<AddMemberPopup />} />
     </Routes>
   );
 }

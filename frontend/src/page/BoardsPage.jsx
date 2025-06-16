@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from "react";
 import BoardForm from "../components/BoardForm";
-import axios from "axios";
 import InviteForm from "../components/InviteForm";
-import * as jwtDecodeModule from "jwt-decode";
-
-const jwtDecode = jwtDecodeModule.default || jwtDecodeModule;
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const BoardsPage = () => {
   const [boards, setBoards] = useState([]);
   const [currentUserId, setCurrentUserId] = useState(null);
 
+  // Benutzer-ID aus dem Token auslesen
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        const decoded = jwtDecode(token);
-        setCurrentUserId(decoded.id); 
+        const decoded = jwt_decode(token);
+        setCurrentUserId(decoded.id); // Passe dies an deine Tokenstruktur an
       } catch (err) {
         console.error("Token decode Fehler:", err);
       }
@@ -29,9 +28,13 @@ const BoardsPage = () => {
         console.error("Kein Token gefunden");
         return;
       }
+
       const res = await axios.get("http://localhost:5000/api/boards", {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+
       setBoards(res.data);
     } catch (err) {
       console.error("Fehler beim Laden der Boards:", err.message);
@@ -56,6 +59,7 @@ const BoardsPage = () => {
         <ul style={{ listStyleType: "none", padding: 0 }}>
           {boards.map((board) => {
             const ownerId = board.owner?._id || board.owner;
+
             return (
               <li
                 key={board._id}
@@ -68,7 +72,10 @@ const BoardsPage = () => {
               >
                 <strong>{board.title}</strong>
                 {currentUserId && ownerId === currentUserId && (
-                  <InviteForm boardId={board._id} onInviteSuccess={fetchBoards} />
+                  <InviteForm
+                    boardId={board._id}
+                    onInviteSuccess={fetchBoards}
+                  />
                 )}
               </li>
             );
@@ -80,4 +87,3 @@ const BoardsPage = () => {
 };
 
 export default BoardsPage;
-
