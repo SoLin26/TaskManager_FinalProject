@@ -36,7 +36,16 @@ const BoardForm = ({ onBoardCreated }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: "2rem" }}>
+    <form
+      onSubmit={handleSubmit}
+      style={{
+        marginBottom: "2rem",
+        display: "flex",
+        alignItems: "flex-start",
+        gap: "1rem",
+        flexWrap: "wrap", // damit es auf kleinen Screens umbricht
+      }}
+    >
       <input
         type="text"
         placeholder="Board Titel"
@@ -44,10 +53,10 @@ const BoardForm = ({ onBoardCreated }) => {
         onChange={(e) => setTitle(e.target.value)}
         style={{
           padding: "0.5rem",
-          marginRight: "1rem",
           width: "40%",
           borderRadius: "4px",
           border: "1px solid #ccc",
+          height: "4rem",
         }}
       />
       <textarea
@@ -58,10 +67,10 @@ const BoardForm = ({ onBoardCreated }) => {
         style={{
           padding: "0.5rem",
           width: "40%",
-          marginRight: "1rem",
           borderRadius: "4px",
           border: "1px solid #ccc",
-          resize: "vertical",
+          resize: "none",
+          height: "4rem",
         }}
       />
       <button
@@ -73,6 +82,7 @@ const BoardForm = ({ onBoardCreated }) => {
           border: "none",
           borderRadius: "4px",
           cursor: "pointer",
+          height: "4rem",
         }}
       >
         Erstellen
