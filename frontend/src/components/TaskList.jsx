@@ -231,7 +231,7 @@ function TaskList() {
             color: "white",
             cursor: "pointer",
             fontWeight: "bold",
-            minWidth: 100,
+            minWidth: 130,
           }}
         >
           Hinzufügen

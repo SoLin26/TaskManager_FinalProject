@@ -52,6 +52,25 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
+router.put("/:id", auth, async (req, res) => {
+  try {
+    const board = await Board.findById(req.params.id);
+    if (!board) return res.status(404).json({ message: "Board nicht gefunden" });
+
+    if (!board.owner.equals(req.user.id)) {
+      return res.status(403).json({ message: "Keine Berechtigung" });
+    }
+
+    board.title = req.body.title || board.title;
+    await board.save();
+
+    res.status(200).json(board);
+  } catch (error) {
+    res.status(500).json({ message: "Fehler beim Aktualisieren des Boards" });
+  }
+});
+
+
 // Einladung eines Viewers  klappt noch nicht!!!
 router.post("/:id/invite", auth, async (req, res) => {
   const { email } = req.body;
