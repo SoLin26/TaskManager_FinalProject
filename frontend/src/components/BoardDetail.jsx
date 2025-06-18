@@ -24,7 +24,6 @@ const BoardDetail = () => {
         setNewTitle(response.data.title);
         setError(null);
       } catch (error) {
-        console.error("Fehler beim Laden des Boards:", error);
         setError("Fehler beim Laden des Boards");
       } finally {
         setLoading(false);
@@ -66,8 +65,8 @@ const BoardDetail = () => {
       );
       setBoard(response.data);
       alert("Board aktualisiert");
-    } catch (err) {
-      alert(err.response?.data?.message || "Fehler beim Aktualisieren");
+    } catch {
+      alert("Fehler beim Aktualisieren");
     }
   };
 
@@ -82,8 +81,8 @@ const BoardDetail = () => {
       });
       alert("Board gelöscht");
       navigate("/boards");
-    } catch (err) {
-      alert(err.response?.data?.message || "Fehler beim Löschen");
+    } catch {
+      alert("Fehler beim Löschen");
     }
   };
 
@@ -118,6 +117,7 @@ const BoardDetail = () => {
           border: "none",
           borderRadius: "6px",
           cursor: "pointer",
+          transition: "background-color 0.3s ease",
         }}
         onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#059669")}
         onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#10b981")}
@@ -135,6 +135,7 @@ const BoardDetail = () => {
           border: "none",
           borderRadius: "6px",
           cursor: "pointer",
+          transition: "background-color 0.3s ease",
         }}
         onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#b91c1c")}
         onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#ef4444")}
@@ -151,7 +152,7 @@ const BoardDetail = () => {
         <ul>
           {board.members.map((member) => (
             <li key={member.user._id}>
-              {member.user.fullname} ({member.user.email}) – Rolle: {member.role}
+              {member.user.fullname} ({member.user.email}) - Rolle: {member.role}
             </li>
           ))}
         </ul>
@@ -185,6 +186,7 @@ const BoardDetail = () => {
             border: "none",
             borderRadius: "6px",
             cursor: "pointer",
+            transition: "background-color 0.3s ease",
           }}
           onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#2563eb")}
           onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#3b82f6")}

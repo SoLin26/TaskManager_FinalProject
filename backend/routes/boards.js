@@ -97,4 +97,25 @@ router.post("/:id/invite", auth, async (req, res) => {
   }
 });
 
+// Board löschen
+router.delete("/:id", auth, async (req, res) => {
+  try {
+    const board = await Board.findById(req.params.id);
+    if (!board) {
+      return res.status(404).json({ message: "Board nicht gefunden" });
+    }
+
+    if (!board.owner.equals(req.user.id)) {
+      return res.status(403).json({ message: "Keine Berechtigung zum Löschen" });
+    }
+
+    await board.deleteOne();
+
+    res.status(200).json({ message: "Board gelöscht" });
+  } catch (error) {
+    res.status(500).json({ message: "Fehler beim Löschen des Boards" });
+  }
+});
+
+
 export default router;
