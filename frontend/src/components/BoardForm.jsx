@@ -3,31 +3,35 @@ import axios from "axios";
 
 const BoardForm = ({ onBoardCreated }) => {
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem("token");
-    if (!token) {
-      console.error("Kein Token gefunden");
+    if (!title.trim()) {
+      alert("Titel darf nicht leer sein.");
       return;
     }
 
     try {
+      const token = localStorage.getItem("token");
       await axios.post(
         "http://localhost:5000/api/boards",
-        { title },
+        { title, description },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-
       setTitle("");
-      onBoardCreated();
-    } catch (err) {
-      console.error("Fehler beim Erstellen des Boards:", err.message);
+      setDescription("");
+      if (onBoardCreated) {
+        onBoardCreated();
+      }
+    } catch (error) {
+      console.error("Fehler beim Erstellen des Boards:", error);
+      alert("Fehler beim Erstellen");
     }
   };
 
@@ -35,13 +39,42 @@ const BoardForm = ({ onBoardCreated }) => {
     <form onSubmit={handleSubmit} style={{ marginBottom: "2rem" }}>
       <input
         type="text"
+        placeholder="Board Titel"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Board Titel"
-        required
-        style={{ padding: "0.5rem", marginRight: "1rem", width: "60%" }}
+        style={{
+          padding: "0.5rem",
+          marginRight: "1rem",
+          width: "40%",
+          borderRadius: "4px",
+          border: "1px solid #ccc",
+        }}
       />
-      <button type="submit" style={{ padding: "0.5rem 1rem" }}>
+      <textarea
+        placeholder="Beschreibung (optional)"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        rows={2}
+        style={{
+          padding: "0.5rem",
+          width: "40%",
+          marginRight: "1rem",
+          borderRadius: "4px",
+          border: "1px solid #ccc",
+          resize: "vertical",
+        }}
+      />
+      <button
+        type="submit"
+        style={{
+          padding: "0.5rem 1rem",
+          backgroundColor: "#28a745",
+          color: "white",
+          border: "none",
+          borderRadius: "4px",
+          cursor: "pointer",
+        }}
+      >
         Erstellen
       </button>
     </form>
