@@ -4,6 +4,8 @@ import InviteForm from "../components/InviteForm";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
+
+
 const BoardsPage = () => {
   const [boards, setBoards] = useState([]);
   const [currentUserId, setCurrentUserId] = useState(null);
@@ -13,7 +15,7 @@ const BoardsPage = () => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        const decoded = jwt_decode(token);
+        const decoded = jwtDecode(token);
         setCurrentUserId(decoded.id); // Passe dies an deine Tokenstruktur an
       } catch (err) {
         console.error("Token decode Fehler:", err);
