@@ -7,6 +7,8 @@ import authenticateRoute from "./routes/authenticateRoute.js";
 import todoRoutes from "./routes/todos.js";
 import boardRoutes from "./routes/boards.js";
 import Member from "./models/Member.js";
+import notificationsRoute from "./routes/notifications.js";
+app.use("/api/notifications", notificationsRoute);
 
 dotenv.config();
 

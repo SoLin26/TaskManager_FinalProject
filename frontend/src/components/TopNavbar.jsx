@@ -7,9 +7,10 @@ function TopNavBar({ onLogout }) {
   const [activePopup, setActivePopup] = useState(null);
   const [showProfileDetails, setShowProfileDetails] = useState(false);
   const [user, setUser] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
-    // User-Daten aus localStorage laden
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
@@ -28,6 +29,34 @@ function TopNavBar({ onLogout }) {
     setActivePopup(null);
   };
 
+  const handleSearch = async () => {
+    if (!searchTerm.trim()) return;
+
+    try {
+      const response = await fetch(`/api/search?q=${encodeURIComponent(searchTerm)}`);
+      const data = await response.json();
+      setSearchResults(data.results || []);
+    } catch (error) {
+      console.error("Fehler bei der Suche:", error);
+    }
+  };
+
+  const sendMarketingConsent = async (consent) => {
+    try {
+      const response = await fetch("/api/notifications/marketing-consent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ consent }),
+      });
+
+      const result = await response.json();
+      alert(`Danke! Deine Auswahl wurde gespeichert: ${consent ? "Ja, gerne!" : "Nein, danke"}`);
+      setActivePopup(null);
+    } catch (error) {
+      console.error("Fehler beim Speichern:", error);
+    }
+  };
+
   return (
     <div className="top-navbar">
       <button onClick={() => togglePopup("notifications")}>🔔 Benachrichtigungen</button>
@@ -38,7 +67,41 @@ function TopNavBar({ onLogout }) {
       <button onClick={() => togglePopup("profile")}>👤 Profil</button>
 
       {activePopup === "notifications" && (
-        <div className="popup">📩 Du hast keine neuen Benachrichtigungen.</div>
+        <div className="popup notification-popup">
+          <div className="notification-header">
+            <h3>Benachrichtigungen</h3>
+            <label className="switch-container">
+              <span>Nur ungelesene anzeigen</span>
+              <label className="switch">
+                <input type="checkbox" defaultChecked />
+                <span className="slider round"></span>
+              </label>
+            </label>
+          </div>
+
+          <hr />
+
+          <div className="notification-body">
+            <p><strong>Hallo!</strong></p>
+            <p>
+              Todoliste und Atlassian ( Mutterunternehmen) würden gerne mit Ihnen
+              in Verbindung bleiben. Dürfen wir Ihnen gelegentlich Marketing-Mails senden?
+            </p>
+            <div className="notification-buttons">
+              <button className="btn-secondary" onClick={() => sendMarketingConsent(false)}>
+                Nein, danke
+              </button>
+              <button className="btn-primary" onClick={() => sendMarketingConsent(true)}>
+                Ja, gerne!
+              </button>
+            </div>
+            <div className="notification-image">
+             <img src="Photo/fox1.jpg" alt="Fox" />
+
+            </div>
+            <p className="no-unread">Keine ungelesenen Benachrichtigungen</p>
+          </div>
+        </div>
       )}
 
       {activePopup === "addMember" && (
@@ -49,8 +112,26 @@ function TopNavBar({ onLogout }) {
       )}
 
       {activePopup === "search" && (
-        <div className="popup">
-          <input type="text" placeholder="Suchen..." />
+        <div className="popup search-popup">
+          <input
+            type="text"
+            placeholder="Suchen..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button onClick={handleSearch}>🔍 Suchen</button>
+
+          <div className="search-results">
+            {searchResults.length > 0 ? (
+              searchResults.map((item, index) => (
+                <div key={index} className="search-item">
+                  <strong>{item.type}</strong>: {item.title}
+                </div>
+              ))
+            ) : (
+              <p>Keine Ergebnisse</p>
+            )}
+          </div>
         </div>
       )}
 
@@ -73,7 +154,7 @@ function TopNavBar({ onLogout }) {
 
       {activePopup === "profile" && (
         <div className="popup profile-popup">
-          {!showProfileDetails && (
+          {!showProfileDetails ? (
             <>
               <p>👋 Hallo, {user?.fullname || "Nutzer"}!</p>
               <button onClick={() => setShowProfileDetails(true)}>Profil ansehen</button>
@@ -87,9 +168,7 @@ function TopNavBar({ onLogout }) {
               </button>
               <button onClick={closeProfilePopup}>Schließen</button>
             </>
-          )}
-
-          {showProfileDetails && (
+          ) : (
             <>
               <h3>Profil Details</h3>
               <p><strong>Vollständiger Name:</strong> {user?.fullname || "-"}</p>
