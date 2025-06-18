@@ -27,8 +27,20 @@ function LandingPage({ onLogin }) {
     setLoginMessage('');
   };
 
-  // Registrierung an Backend schicken
+  // Registrierung an Backend schicken mit Validierung
   const handleRegister = async () => {
+    if (!fullname || !usernameReg || !emailReg || !passwordReg) {
+      setRegisterMessage('❌ Bitte fülle alle Felder aus.');
+      return;
+    }
+
+    // Simple E-Mail Validierung
+    const emailPattern = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+    if (!emailPattern.test(emailReg)) {
+      setRegisterMessage('❌ Bitte gib eine gültige E-Mail-Adresse ein.');
+      return;
+    }
+
     try {
       const res = await fetch('http://localhost:5000/user/register', {
         method: 'POST',
@@ -56,39 +68,42 @@ function LandingPage({ onLogin }) {
   };
 
   // Login an Backend schicken
- const handleLogin = async () => {
-  try {
-    const res = await fetch('http://localhost:5000/user/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: usernameLogin,
-        password: passwordLogin,
-      }),
-    });
-    const data = await res.json();
-    if (res.ok && data.token) {
-      setLoginMessage(`✅ Login erfolgreich! Willkommen, ${data.user.fullname}`);
-      setLoginOpen(false);
-      setUsernameLogin('');
-      setPasswordLogin('');
-
-      // WICHTIG: Token speichern
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-
-      // App informieren
-      onLogin(data.token, data.user);
-
-      navigate('/dashboard');
-    } else {
-      setLoginMessage('❌ Fehler: ' + (data.message || 'Unbekannter Fehler'));
+  const handleLogin = async () => {
+    if (!usernameLogin || !passwordLogin) {
+      setLoginMessage('❌ Bitte Benutzername und Passwort eingeben.');
+      return;
     }
-  } catch (err) {
-    setLoginMessage('❌ Netzwerkfehler: ' + err.message);
-  }
-};
+    try {
+      const res = await fetch('http://localhost:5000/user/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: usernameLogin,
+          password: passwordLogin,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.token) {
+        setLoginMessage(`✅ Login erfolgreich! Willkommen, ${data.user.fullname}`);
+        setLoginOpen(false);
+        setUsernameLogin('');
+        setPasswordLogin('');
 
+        // WICHTIG: Token speichern
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+
+        // App informieren
+        onLogin(data.token, data.user);
+
+        navigate('/dashboard');
+      } else {
+        setLoginMessage('❌ Fehler: ' + (data.message || 'Unbekannter Fehler'));
+      }
+    } catch (err) {
+      setLoginMessage('❌ Netzwerkfehler: ' + err.message);
+    }
+  };
 
   // "Enter" drücken im Login-Modal löst Login aus
   const handleKeyPress = (e) => {
@@ -246,10 +261,16 @@ function LandingPage({ onLogin }) {
       <div className="testimonials-section" id="testimonials">
         <h2>Was unsere Nutzer sagen</h2>
         <div className="testimonial">
-          <p>"TaskHero hat meine Produktivität enorm gesteigert!" - Max M.</p>
+          <p>"TaskHero hat meine Produktivität enorm gesteigert! Ich kann jetzt meine Aufgaben viel effizienter verwalten und habe mehr Zeit für kreative Projekte." - Max M.</p>
         </div>
         <div className="testimonial">
-          <p>"Ein unverzichtbares Tool für mein Team." - Anna K.</p>
+          <p>"Ein unverzichtbares Tool für mein Team. Die Zusammenarbeit ist so viel reibungsloser geworden, und wir können unsere Ziele schneller erreichen." - Anna K.</p>
+        </div>
+        <div className="testimonial">
+          <p>"Ich liebe die benutzerfreundliche Oberfläche von TaskHero! Es hat mir geholfen, den Überblick über meine täglichen Aufgaben zu behalten und Prioritäten besser zu setzen." - Lisa T.</p>
+        </div>
+        <div className="testimonial">
+          <p>"TaskHero hat nicht nur meine persönliche Effizienz verbessert, sondern auch die Kommunikation innerhalb meines Teams optimiert. Ich kann es jedem empfehlen!" - Tom S.</p>
         </div>
       </div>
 
@@ -262,7 +283,7 @@ function LandingPage({ onLogin }) {
         </div>
         <div className="pricing-plan">
           <h3>Teamplan</h3>
-          <p>Für Teams ab 5 Personen,xxxxpro Nutzer/Monat.</p>
+          <p>Für Teams ab 5 Personen,xxxx pro Nutzer/Monat.</p>
         </div>
       </div>
 
@@ -277,9 +298,22 @@ function LandingPage({ onLogin }) {
           <h4>Wie sicher sind meine Daten?</h4>
           <p>Wir verwenden modernste Sicherheitsstandards, um deine Daten zu schützen.</p>
         </div>
+        <div className="faq-item">
+          <h4>Welche Funktionen sind im kostenlosen Plan enthalten?</h4>
+          <p>Der kostenlose Plan umfasst Aufgabenverwaltung, Team-Kollaboration, und grundlegende Analysefunktionen.</p>
+        </div>
+        <div className="faq-item">
+          <h4>Gibt es eine mobile App für TaskHero?</h4>
+          <p>Ja, TaskHero ist sowohl für iOS als auch für Android verfügbar, sodass du deine Aufgaben jederzeit und überall verwalten kannst.</p>
+        </div>
+        <div className="faq-item">
+          <h4>Wie kann ich den Support kontaktieren?</h4>
+          <p>Du kannst unseren Support über das Kontaktformular auf unserer Website oder per E-Mail erreichen. Wir sind hier, um dir zu helfen!</p>
+        </div>
       </div>
     </div>
   );
 }
 
 export default LandingPage;
+
