@@ -3,71 +3,90 @@ import axios from "axios";
 
 const BoardForm = ({ onBoardCreated }) => {
   const [title, setTitle] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [description, setDescription] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
+
+    if (!title.trim()) {
+      alert("Titel darf nicht leer sein.");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.post(
+      await axios.post(
         "http://localhost:5000/api/boards",
-        { title },
+        { title, description },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      setTitle(""); // Eingabe zurücksetzen
+      setTitle("");
+      setDescription("");
       if (onBoardCreated) {
-        onBoardCreated(response.data); // Neues Board  zurückgeben
+        onBoardCreated();
       }
-    } catch (err) {
-      setError("Fehler beim Erstellen des Boards");
-      console.error("Fehler beim Erstellen des Boards:", err.message);
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error("Fehler beim Erstellen des Boards:", error);
+      alert("Fehler beim Erstellen");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: "2rem" }}>
+    <form
+      onSubmit={handleSubmit}
+      style={{
+        marginBottom: "2rem",
+        display: "flex",
+        alignItems: "flex-start",
+        gap: "1rem",
+        flexWrap: "wrap", // damit es auf kleinen Screens umbricht
+      }}
+    >
       <input
         type="text"
-        placeholder="Neues Board eingeben"
+        placeholder="Board Titel"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        required
         style={{
-          padding: "1rem",
-          fontSize: "1.2rem",
-          width: "400px", // etwas breiter für besseres sehen
+          padding: "0.5rem",
+          width: "40%",
+          borderRadius: "4px",
+          border: "1px solid #ccc",
+          height: "4rem",
         }}
-        disabled={loading}
+      />
+      <textarea
+        placeholder="Beschreibung (optional)"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        rows={2}
+        style={{
+          padding: "0.5rem",
+          width: "40%",
+          borderRadius: "4px",
+          border: "1px solid #ccc",
+          resize: "none",
+          height: "4rem",
+        }}
       />
       <button
         type="submit"
-        disabled={loading}
         style={{
-          padding: "1rem 2rem",
-          fontSize: "1.2rem",
-          backgroundColor: "#007BFF",
+          padding: "0.5rem 1rem",
+          backgroundColor: "#28a745",
           color: "white",
           border: "none",
-          borderRadius: "5px",
-          cursor: loading ? "not-allowed" : "pointer",
+          borderRadius: "4px",
+          cursor: "pointer",
+          height: "4rem",
         }}
       >
-        {loading ? "Erstelle..." : "Erstellen"}
+        Erstellen
       </button>
-      {error && (
-        <p style={{ color: "red", marginTop: "1rem" }}>
-          {error}
-        </p>
-      )}
     </form>
   );
 };

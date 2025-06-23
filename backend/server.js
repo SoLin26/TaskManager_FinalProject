@@ -3,34 +3,41 @@ import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
-import authRoute from "./routes/authenticateRoute.js";
 import authenticateRoute from "./routes/authenticateRoute.js";
 import todoRoutes from "./routes/todos.js";
 import boardRoutes from "./routes/boards.js";
 import Member from "./models/Member.js";
-import helmet from "helmet";
+import notificationsRoute from "./routes/notifications.js";
+app.use("/api/notifications", notificationsRoute);
+
 dotenv.config();
+
 const mongoURI = process.env.MONGODB_URI;
 const PORT = process.env.PORT || 5000;
+
 // MongoDB verbinden
 mongoose.connect(mongoURI)
-  .then(() => console.log(" MongoDB verbunden"))
-  .catch((err) => console.error(" MongoDB-Verbindung fehlgeschlagen:", err.message));
+  .then(() => console.log("✅ MongoDB verbunden"))
+  .catch((err) => console.error("❌ MongoDB-Verbindung fehlgeschlagen:", err.message));
+
 const app = express();
-// :white_check_mark: Middleware vor den Routen definieren!
-app.use(helmet({}));
+
+// ✅ Middleware vor den Routen definieren!
 app.use(cors({
-  origin: "*",
+  origin: "http://localhost:5173",
   credentials: true,
 }));
 app.use(express.json());
 app.use(cookieParser());
-// :white_check_mark: Auth-Route
-app.use("/api/auth", authRoute);
-// :white_check_mark: Geschützte Routen
+
+// ✅ Auth-Route
+app.use("/api/auth", authenticateRoute);
+
+// ✅ Geschützte Routen
 app.use("/user", authenticateRoute);
 app.use("/api/todos", todoRoutes);
 app.use("/api/boards", boardRoutes);
+
 // Aufgabenrouten (Testdaten)
 let tasks = [];
 app.post("/api/tasks", (req, res) => {
@@ -56,12 +63,15 @@ app.get("/api/tasks", (req, res) => {
 // Einladung
 app.post("/api/invite", (req, res) => {
   const { email, role } = req.body;
+
   if (!email || !email.includes("@")) {
     return res.status(400).json({ message: "Ungültige E-Mail" });
   }
-  console.log(`Einladung an ${email} als ${role} gesendet.`);
+
+  console.log(`📨 Einladung an ${email} als ${role} gesendet.`);
   res.status(200).json({ success: true });
 });
+
 // Mitglieder-API
 app.get("/api/members", async (req, res) => {
   try {
@@ -96,8 +106,6 @@ app.listen(PORT, () => {
   console.log(`:rocket: Backend läuft auf http://localhost:${PORT}`);
 });
 
-
-
-
-
-
+app.listen(PORT, () => {
+  console.log(`🚀 Backend läuft auf http://localhost:${PORT}`);
+});

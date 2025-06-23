@@ -1,44 +1,17 @@
-// 📁 models/Board.js
 import mongoose from "mongoose";
 
-const boardSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-    trim: true,
-    minlength: 2
-    // unique: true // 👉 optionnel, si tu veux un titre unique par utilisateur
-  },
-  tasks: {
-    type: [String],
-    default: []
-  },
-  archived: {
-    type: Boolean,
-    default: false
-  },
-  owner: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: false
-  },
+const BoardSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, default: "" }, // <--- hinzufügen!
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   members: [
     {
-      user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
-      },
-      role: {
-        type: String,
-        enum: ["viewer", "editor", "admin"],
-        default: "viewer"
-      }
-    }
+      user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      role: { type: String, enum: ["viewer", "editor"], default: "viewer" },
+    },
   ],
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
+}, {
+  timestamps: true
 });
 
-export default mongoose.model("Board", boardSchema);
+export default mongoose.model("Board", BoardSchema);
