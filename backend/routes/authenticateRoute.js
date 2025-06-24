@@ -1,4 +1,4 @@
-import express, { response } from "express";
+import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
@@ -34,8 +34,10 @@ router.post("/register", async (req, res) => {
       }
     });
   } catch (error) {
+     
     console.error("Registrierungsfehler:", error);
-    res.status(500).json({ message: "Interner Serverfehler", error: error.message });
+    //res.status(500).json({ message: "Interner Serverfehler", error: error.message });
+    next(error);
   }
 });
 
