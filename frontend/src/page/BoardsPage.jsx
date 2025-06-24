@@ -75,7 +75,7 @@ const BoardsPage = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `http://localhost:5000/api/boards/${board._id}`,
+        `http://localhost:8080/boards/${board._id}`,
         {
           title: newTitle,
           description: newDescription,

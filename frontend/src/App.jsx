@@ -74,7 +74,7 @@ function App() {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "http://localhost:5000/api/auth/logout",
+        "http://localhost:8080/api/auth/logout",
         {},
         { withCredentials: true }
       );

@@ -1,11 +1,13 @@
 import mongoose from "mongoose";
 
 const todoSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
+  boardId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Board" },
   title: { type: String, required: true },
   column: { type: String, required: true },
-  dueDate: { type: Date }, // neu: optionales Fälligkeitsdatum
+  dueDate: Date,
   createdAt: { type: Date, default: Date.now },
 });
 
-export default mongoose.model("Todo", todoSchema);
+const Todo = mongoose.model("Todo", todoSchema);
+export default Todo;
