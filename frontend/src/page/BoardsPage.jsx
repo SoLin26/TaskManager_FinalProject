@@ -31,7 +31,7 @@ const BoardsPage = () => {
         return;
       }
 
-      const res = await axios.get("http://localhost:5000/api/boards", {
+      const res = await axios.get("http://localhost:8080/api/boards", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -55,7 +55,7 @@ const BoardsPage = () => {
     if (!window.confirm("Board wirklich löschen?")) return;
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5000/api/boards/${id}`, {
+      await axios.delete(`http://localhost:8080/api/boards/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

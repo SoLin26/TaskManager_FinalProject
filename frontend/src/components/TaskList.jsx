@@ -13,7 +13,7 @@ function TaskList() {
 
   const textareaRef = useRef(null);
 
-  const API_URL = "http://localhost:5000/api/todos";
+  const API_URL = "http://localhost:8080/api/todos";
   const token = localStorage.getItem("token");
 
   // Todos laden

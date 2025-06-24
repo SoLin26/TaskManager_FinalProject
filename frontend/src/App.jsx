@@ -41,7 +41,7 @@ function App() {
   useEffect(() => {
     const checkLogin = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/auth/me", {
+        const res = await axios.get("http://localhost:8080/api/auth/me", {
           withCredentials: true,
         });
         setUser(res.data.user);

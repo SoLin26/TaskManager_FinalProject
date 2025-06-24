@@ -16,7 +16,7 @@ const BoardForm = ({ onBoardCreated }) => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "http://localhost:5000/api/boards",
+        "http://localhost:8080/api/boards",
         { title, description },
         {
           headers: {
