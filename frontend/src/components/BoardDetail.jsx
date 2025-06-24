@@ -31,6 +31,11 @@ const BoardDetail = () => {
     };
     fetchBoard();
   }, [id]);
+  
+
+
+
+  
 
   const handleInvite = async () => {
     try {

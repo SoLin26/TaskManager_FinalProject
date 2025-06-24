@@ -1,53 +1,72 @@
 import React, { useState, useEffect, useRef } from "react";
 
 function TaskList() {
+  const [boards, setBoards] = useState([]);
+  const [selectedBoardId, setSelectedBoardId] = useState("");
   const [todos, setTodos] = useState([]);
   const [newTitle, setNewTitle] = useState("");
   const [newColumn, setNewColumn] = useState("⭐ Level 1");
   const [newDueDate, setNewDueDate] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loadingBoards, setLoadingBoards] = useState(true);
+  const [loadingTodos, setLoadingTodos] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editColumn, setEditColumn] = useState("");
   const [editDueDate, setEditDueDate] = useState("");
 
   const textareaRef = useRef(null);
-
-  const API_URL = "http://localhost:8080/api/todos";
   const token = localStorage.getItem("token");
 
-  // Todos laden
- useEffect(() => {
-  if (!token) return;
+  const API_BOARDS = "http://localhost:8080/api/boards";
+  const API_TODOS = "http://localhost:8080/api/todos";
 
-  setLoading(true);
+  // Boards laden beim Start
+  useEffect(() => {
+    if (!token) return;
+    setLoadingBoards(true);
 
-  fetch(API_URL, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-    .then(async (res) => {
-      if (!res.ok) {
-        throw new Error(`Fehler: ${res.status}`); // z. B. 401 Unauthorized
-      }
-      const data = await res.json();
-
-      if (!Array.isArray(data)) {
-        throw new Error("Unerwartetes Datenformat");
-      }
-
-      setTodos(data);
+    fetch(API_BOARDS, {
+      headers: { Authorization: `Bearer ${token}` },
     })
-    .catch((err) => {
-      console.error("Fehler beim Laden der Todos:", err);
-      setTodos([]); // Fallback: leeres Array setzen
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`Fehler beim Laden der Boards: ${res.status}`);
+        const data = await res.json();
+        if (!Array.isArray(data)) throw new Error("Unerwartetes Datenformat bei Boards");
+        setBoards(data);
+        if (data.length > 0) setSelectedBoardId(data[0]._id); // erstes Board auswählen
+      })
+      .catch((err) => {
+        console.error(err);
+        setBoards([]);
+      })
+      .finally(() => setLoadingBoards(false));
+  }, [token]);
+
+  // Todos laden, wenn Board gewechselt wird
+  useEffect(() => {
+    if (!token || !selectedBoardId) {
+      setTodos([]);
+      return;
+    }
+    setLoadingTodos(true);
+
+    fetch(`${API_TODOS}?boardId=${selectedBoardId}`, {
+      headers: { Authorization: `Bearer ${token}` },
     })
-    .finally(() => {
-      setLoading(false);
-    });
-}, [token]);
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`Fehler beim Laden der Todos: ${res.status}`);
+        const data = await res.json();
+        if (!Array.isArray(data)) throw new Error("Unerwartetes Datenformat bei Todos");
+        setTodos(data);
+      })
+      .catch((err) => {
+        console.error(err);
+        setTodos([]);
+      })
+      .finally(() => setLoadingTodos(false));
+  }, [token, selectedBoardId]);
 
-
-  // Textarea automatisch anpassen
+  // Textarea auto-height
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
@@ -59,13 +78,18 @@ function TaskList() {
   const handleAddTodo = async () => {
     if (!newTitle.trim()) return;
     try {
-      const res = await fetch(API_URL, {
+      const res = await fetch(API_TODOS, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ title: newTitle, column: newColumn, dueDate: newDueDate || null }),
+        body: JSON.stringify({
+          title: newTitle,
+          column: newColumn,
+          dueDate: newDueDate || null,
+          boardId: selectedBoardId,
+        }),
       });
       if (!res.ok) throw new Error("Fehler beim Speichern");
       const savedTodo = await res.json();
@@ -78,7 +102,7 @@ function TaskList() {
     }
   };
 
-  // Todo zum Bearbeiten auswählen
+  // Bearbeiten starten
   const startEditing = (todo) => {
     setEditingId(todo._id);
     setEditTitle(todo.title);
@@ -86,7 +110,6 @@ function TaskList() {
     setEditDueDate(todo.dueDate ? todo.dueDate.slice(0, 10) : "");
   };
 
-  // Bearbeitung abbrechen
   const cancelEditing = () => {
     setEditingId(null);
     setEditTitle("");
@@ -98,19 +121,22 @@ function TaskList() {
   const saveEditing = async (id) => {
     if (!editTitle.trim()) return alert("Titel darf nicht leer sein");
     try {
-      const res = await fetch(`${API_URL}/${id}`, {
+      const res = await fetch(`${API_TODOS}/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ title: editTitle, column: editColumn, dueDate: editDueDate || null }),
+        body: JSON.stringify({
+          title: editTitle,
+          column: editColumn,
+          dueDate: editDueDate || null,
+          boardId: selectedBoardId,
+        }),
       });
       if (!res.ok) throw new Error("Fehler beim Aktualisieren");
       const updatedTodo = await res.json();
-      setTodos((prev) =>
-        prev.map((todo) => (todo._id === id ? updatedTodo : todo))
-      );
+      setTodos((prev) => prev.map((todo) => (todo._id === id ? updatedTodo : todo)));
       cancelEditing();
     } catch (err) {
       alert(err.message);
@@ -121,11 +147,9 @@ function TaskList() {
   const deleteTodo = async (id) => {
     if (!window.confirm("Diese Aufgabe wirklich löschen?")) return;
     try {
-      const res = await fetch(`${API_URL}/${id}`, {
+      const res = await fetch(`${API_TODOS}/${id}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Fehler beim Löschen");
       setTodos((prev) => prev.filter((todo) => todo._id !== id));
@@ -142,7 +166,8 @@ function TaskList() {
     }
   };
 
-  if (loading) return <div style={{ fontSize: 24, padding: 20 }}>Lädt Todos...</div>;
+  if (loadingBoards) return <div>Lädt Boards...</div>;
+  if (!selectedBoardId) return <div>Bitte wähle ein Board aus.</div>;
 
   return (
     <div
@@ -155,6 +180,30 @@ function TaskList() {
       }}
     >
       <h2 style={{ fontSize: 30, marginBottom: 20 }}>Task List</h2>
+
+      {/* Board Auswahl */}
+      <div style={{ marginBottom: 20 }}>
+        <label htmlFor="boardSelect" style={{ marginRight: 10, fontWeight: "bold" }}>
+          Board auswählen:
+        </label>
+        <select
+          id="boardSelect"
+          value={selectedBoardId}
+          onChange={(e) => setSelectedBoardId(e.target.value)}
+          style={{
+            fontSize: 20,
+            padding: "8px 12px",
+            borderRadius: 6,
+            border: "2px solid #ccc",
+          }}
+        >
+          {boards.map((board) => (
+            <option key={board._id} value={board._id}>
+              {board.title}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {/* Neue Aufgabe hinzufügen */}
       <div
@@ -217,183 +266,123 @@ function TaskList() {
             outline: "none",
             boxSizing: "border-box",
           }}
-          aria-label="Fälligkeitsdatum"
         />
         <button
           onClick={handleAddTodo}
           style={{
-            flex: "0 1 100px",
-            padding: "14px 0",
+            flex: "0 0 auto",
+            padding: "16px 25px",
             fontSize: 22,
             borderRadius: 8,
             border: "none",
-            backgroundColor: "#28a745",
+            backgroundColor: "black",
             color: "white",
             cursor: "pointer",
-            fontWeight: "bold",
-            minWidth: 130,
           }}
         >
           Hinzufügen
         </button>
       </div>
 
-      {/* Liste der Todos */}
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {todos.map((todo) => (
-          <li
-            key={todo._id}
-            style={{
-              padding: "18px 24px",
-              marginBottom: 12,
-              backgroundColor: "#f0f0f0",
-              borderRadius: 10,
-              fontSize: 24,
-              fontWeight: "600",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "center",
-              gap: 15,
-            }}
-          >
-            {editingId === todo._id ? (
-              <>
-                <textarea
-                  value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
-                  style={{
-                    flex: "2 1 300px",
-                    padding: "10px 14px",
-                    fontSize: 20,
-                    borderRadius: 6,
-                    border: "1px solid #ccc",
-                    outline: "none",
-                    resize: "vertical",
-                    minHeight: 50,
-                    lineHeight: 1.3,
-                    boxSizing: "border-box",
-                  }}
-                />
-                <select
-                  value={editColumn}
-                  onChange={(e) => setEditColumn(e.target.value)}
-                  style={{
-                    flex: "1 1 150px",
-                    padding: "10px 14px",
-                    fontSize: 20,
-                    borderRadius: 6,
-                    border: "1px solid #ccc",
-                    outline: "none",
-                    boxSizing: "border-box",
-                  }}
-                >
-                  <option>⭐ Level 1</option>
-                  <option>😃 Level 2</option>
-                  <option>🦄 Level 3</option>
-                  <option>📚 Learning</option>
-                  <option>✅ Done</option>
-                </select>
-                <input
-                  type="date"
-                  value={editDueDate}
-                  onChange={(e) => setEditDueDate(e.target.value)}
-                  style={{
-                    flex: "1 1 150px",
-                    padding: "10px 14px",
-                    fontSize: 20,
-                    borderRadius: 6,
-                    border: "1px solid #ccc",
-                    outline: "none",
-                    boxSizing: "border-box",
-                  }}
-                  aria-label="Fälligkeitsdatum bearbeiten"
-                />
-
-                <button
-                  onClick={() => saveEditing(todo._id)}
-                  style={{
-                    padding: "10px 16px",
-                    fontSize: 18,
-                    borderRadius: 6,
-                    border: "none",
-                    backgroundColor: "#007bff",
-                    color: "white",
-                    cursor: "pointer",
-                  }}
-                >
-                  Speichern
-                </button>
-                <button
-                  onClick={cancelEditing}
-                  style={{
-                    padding: "10px 16px",
-                    fontSize: 18,
-                    borderRadius: 6,
-                    border: "none",
-                    backgroundColor: "#6c757d",
-                    color: "white",
-                    cursor: "pointer",
-                  }}
-                >
-                  Abbrechen
-                </button>
-              </>
-            ) : (
-              <>
-                <div style={{ flex: "2 1 300px" }}>
-                  {todo.title}{" "}
-                  <span style={{ fontSize: 18, fontStyle: "italic", color: "#555" }}>
-                    – {todo.column}
-                  </span>
-                  {todo.dueDate && (
-                    <div
-                      style={{
-                        fontSize: 16,
-                        color: todo.dueDate < new Date().toISOString() ? "red" : "#333",
-                        fontWeight: "normal",
-                        marginTop: 4,
-                      }}
-                    >
-                      Fällig: {new Date(todo.dueDate).toLocaleDateString()}
-                    </div>
-                  )}
-                </div>
-                <button
-                  onClick={() => startEditing(todo)}
-                  style={{
-                    padding: "8px 14px",
-                    fontSize: 18,
-                    borderRadius: 6,
-                    border: "none",
-                    backgroundColor: "#ffc107",
-                    color: "black",
-                    cursor: "pointer",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Bearbeiten
-                </button>
-                <button
-                  onClick={() => deleteTodo(todo._id)}
-                  style={{
-                    padding: "8px 14px",
-                    fontSize: 18,
-                    borderRadius: 6,
-                    border: "none",
-                    backgroundColor: "#dc3545",
-                    color: "white",
-                    cursor: "pointer",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Löschen
-                </button>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
+      {/* Todos anzeigen */}
+      {loadingTodos ? (
+        <div>Lädt Todos...</div>
+      ) : (
+        <ul
+          style={{
+            listStyle: "none",
+            padding: 0,
+            margin: 0,
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))",
+            gap: 15,
+          }}
+        >
+          {todos.map((todo) => (
+            <li
+              key={todo._id}
+              style={{
+                backgroundColor: "#f7f7f7",
+                padding: 16,
+                borderRadius: 8,
+                boxShadow: "0 3px 5px rgb(0 0 0 / 0.1)",
+                display: "flex",
+                flexDirection: "column",
+                gap: 10,
+              }}
+            >
+              {editingId === todo._id ? (
+                <>
+                  <textarea
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    style={{
+                      fontSize: 22,
+                      borderRadius: 6,
+                      border: "2px solid #ccc",
+                      padding: 10,
+                      resize: "vertical",
+                      minHeight: 70,
+                      outline: "none",
+                    }}
+                  />
+                  <select
+                    value={editColumn}
+                    onChange={(e) => setEditColumn(e.target.value)}
+                    style={{
+                      fontSize: 20,
+                      borderRadius: 6,
+                      border: "2px solid #ccc",
+                      padding: 10,
+                      outline: "none",
+                    }}
+                  >
+                    <option>⭐ Level 1</option>
+                    <option>😃 Level 2</option>
+                    <option>🦄 Level 3</option>
+                    <option>📚 Learning</option>
+                    <option>✅ Done</option>
+                  </select>
+                  <input
+                    type="date"
+                    value={editDueDate}
+                    onChange={(e) => setEditDueDate(e.target.value)}
+                    style={{
+                      fontSize: 20,
+                      borderRadius: 6,
+                      border: "2px solid #ccc",
+                      padding: 10,
+                      outline: "none",
+                    }}
+                  />
+                  <div>
+                    <button onClick={() => saveEditing(todo._id)} style={{ marginRight: 10 }}>
+                      Speichern
+                    </button>
+                    <button onClick={cancelEditing}>Abbrechen</button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h3 style={{ margin: 0 }}>{todo.title}</h3>
+                  <p style={{ margin: "4px 0" }}>{todo.column}</p>
+                  <p style={{ margin: "4px 0", color: "#666" }}>
+                    {todo.dueDate ? new Date(todo.dueDate).toLocaleDateString() : "Kein Datum"}
+                  </p>
+                  <div>
+                    <button onClick={() => startEditing(todo)} style={{ marginRight: 10 }}>
+                      Bearbeiten
+                    </button>
+                    <button onClick={() => deleteTodo(todo._id)} style={{ color: "red" }}>
+                      Löschen
+                    </button>
+                  </div>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
