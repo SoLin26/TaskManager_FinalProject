@@ -47,11 +47,16 @@ router.post("/login", async (req, res) => {
     const { username, password } = req.body;
 
     const user = await User.findOne({ username });
+   
+    
     if (!user) {
+      
       return res.status(401).json({ message: "Ungültige Anmeldedaten" });
     }
-
+    console.log(password,user.password);
+    
     const validPassword = await bcrypt.compare(password, user.password);
+  
     if (!validPassword) {
       return res.status(401).json({ message: "Ungültige Anmeldedaten" });
     }
