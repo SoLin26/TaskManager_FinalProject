@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import BoardForm from "../components/BoardForm";
 import InviteForm from "../components/InviteForm";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode"; // korrigiert: 'jwtDecode' nicht in {} importieren
 import { useNavigate } from "react-router-dom";
+import TaskListMini from "../components/TaskListMini";
 
 const BoardsPage = () => {
   const [boards, setBoards] = useState([]);
@@ -78,7 +79,7 @@ const BoardsPage = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `http://localhost:8080/api/boards/${board._id}`, // <-- Pfad korrigiert
+        `http://localhost:8080/api/boards/${board._id}`,
         {
           title: newTitle,
           description: newDescription,
@@ -127,6 +128,9 @@ const BoardsPage = () => {
                 <p style={{ margin: "0.5rem 0" }}>
                   {board.description || "Keine Beschreibung"}
                 </p>
+
+                {/* Mini Task List für dieses Board */}
+                <TaskListMini boardId={board._id} />
 
                 {currentUserId && ownerId === currentUserId && (
                   <>
