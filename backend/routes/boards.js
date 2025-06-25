@@ -59,7 +59,7 @@ router.put("/:id", auth, async (req, res) => {
     const board = await Board.findById(req.params.id);
     if (!board) return res.status(404).json({ message: "Board nicht gefunden" });
 
-    if (!board.owner.equals(req.user.id)) {
+   if (!(board.owner?._id?.equals(req.user.id)))  {
       return res.status(403).json({ message: "Keine Berechtigung" });
     }
 

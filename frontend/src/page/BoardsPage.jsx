@@ -69,13 +69,16 @@ const BoardsPage = () => {
 
   const handleEdit = async (board) => {
     const newTitle = prompt("Neuer Board-Titel:", board.title);
-    const newDescription = prompt("Neue Beschreibung:", board.description || "");
+    const newDescription = prompt(
+      "Neue Beschreibung:",
+      board.description || ""
+    );
     if (!newTitle) return;
 
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `http://localhost:8080/boards/${board._id}`,
+        `http://localhost:8080/api/boards/${board._id}`, // <-- Pfad korrigiert
         {
           title: newTitle,
           description: newDescription,
@@ -88,8 +91,14 @@ const BoardsPage = () => {
       );
       fetchBoards();
     } catch (error) {
+      if (error.response) {
+        alert(
+          `Fehler: ${error.response.status} - ${error.response.data.message}`
+        );
+      } else {
+        alert("Unbekannter Fehler beim Bearbeiten");
+      }
       console.error("Fehler beim Bearbeiten:", error);
-      alert("Fehler beim Bearbeiten");
     }
   };
 
