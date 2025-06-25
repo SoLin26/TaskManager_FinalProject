@@ -47,34 +47,43 @@ function Dashboard() {
     navigate("/login");
   };
 
-  const handleAddTask = async (column) => {
-    const task = newTasks[column];
-    if (!task.trim()) return;
+const handleAddTask = async (column) => {
+  const task = newTasks[column];
+  if (!task.trim()) return;
 
-    try {
-      const response = await fetch("http://localhost:5000/api/column/add-card", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({ column: column, task: task }),
-      });
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("❌ Kein Token gefunden. Bitte zuerst einloggen.");
+    return;
+  }
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Erreur d'ajout");
-      }
+  try {
+    const response = await fetch("http://localhost:8080/api/column/add-card", {
 
-      const data = await response.json();
-      const updatedColumn = [...board[column], task];
-      setBoard({ ...board, [column]: updatedColumn });
-      setNewTasks({ ...newTasks, [column]: "" });
-    } catch (err) {
-      console.error("❌ Erreur API :", err.message);
-      alert("Erreur lors de l’ajout de la tâche !");
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ column: column, task: task }),
+    });
+
+    const data = await response.json(); // ✅ body wird EINMAL gelesen
+
+    if (!response.ok) {
+      throw new Error(data.message || "Erreur lors de l’ajout de la tâche.");
     }
-  };
+
+    const updatedColumn = [...board[column], task];
+    setBoard({ ...board, [column]: updatedColumn });
+    setNewTasks({ ...newTasks, [column]: "" });
+
+  } catch (err) {
+    console.error("❌ Erreur API complète :", err);
+    alert(err.message || "Erreur lors de l’ajout de la tâche !");
+  }
+};
+
 
   const onDragEnd = (result) => {
     const { source, destination } = result;

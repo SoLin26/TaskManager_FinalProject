@@ -60,7 +60,7 @@ router.post("/login", async (req, res) => {
     if (!validPassword) {
       return res.status(401).json({ message: "Ungültige Anmeldedaten" });
     }
-
+ 
     // JWT Token erstellen
     const token = jwt.sign(
       {
@@ -71,6 +71,13 @@ router.post("/login", async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
+  // ✅ Définir le cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 3600000, // 1 heure
+      secure: false, // true si HTTPS
+      sameSite: "Lax",
+    });
 
     res.status(200).json({
       message: "Anmeldung erfolgreich",
