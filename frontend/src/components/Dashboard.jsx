@@ -19,21 +19,30 @@ function Dashboard() {
     Object.fromEntries(Object.keys(initialBoard).map((key) => [key, false]))
   );
   const [dropdownOpen, setDropdownOpen] = useState(null);
+  const [user, setUser] = useState(null);
 
   const navigate = useNavigate();
 
+  // ✅ Authentification via cookie
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-    }
+    fetch("http://localhost:8080/api/auth/me", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          navigate("/login");
+        } else {
+          const data = await res.json();
+          setUser(data.user);
+        }
+      })
+      .catch((err) => {
+        console.error("Erreur auth:", err);
+        navigate("/login");
+      });
   }, [navigate]);
 
-  useEffect(() => {
-    const close = () => setDropdownOpen(null);
-    window.addEventListener("click", close);
-    return () => window.removeEventListener("click", close);
-  }, []);
 
   const descriptions = {
     "⭐ Level 1": "📱 Première étape : apprendre les bases, installer l’environnement, créer une app simple.",
@@ -41,49 +50,48 @@ function Dashboard() {
     "🦄 Level 3": "🚀 Automatiser, distribuer, et étendre tes connaissances Swift.",
   };
 
+  // ✅ Déconnexion via suppression du cookie
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userEmail");
-    navigate("/login");
+    fetch("http://localhost:8080/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    })
+      .then(() => navigate("/login"))
+      .catch((err) => {
+        console.error("Erreur lors de la déconnexion", err);
+        navigate("/login");
+      });
   };
 
-const handleAddTask = async (column) => {
-  const task = newTasks[column];
-  if (!task.trim()) return;
+  // ✅ Ajout de tâche via cookie
+  const handleAddTask = async (column) => {
+    const task = newTasks[column];
+    if (!task.trim()) return;
 
-  const token = localStorage.getItem("token");
-  if (!token) {
-    alert("❌ Kein Token gefunden. Bitte zuerst einloggen.");
-    return;
-  }
+    try {
+      const response = await fetch("http://localhost:8080/api/column/add-card", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ column, task }),
+      });
 
-  try {
-    const response = await fetch("http://localhost:8080/api/column/add-card", {
+      const data = await response.json();
 
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ column: column, task: task }),
-    });
+      if (!response.ok) {
+        throw new Error(data.message || "Erreur lors de l’ajout de la tâche.");
+      }
 
-    const data = await response.json(); // ✅ body wird EINMAL gelesen
-
-    if (!response.ok) {
-      throw new Error(data.message || "Erreur lors de l’ajout de la tâche.");
+      const updatedColumn = [...board[column], task];
+      setBoard({ ...board, [column]: updatedColumn });
+      setNewTasks({ ...newTasks, [column]: "" });
+    } catch (err) {
+      console.error("❌ Erreur API complète :", err);
+      alert(err.message || "Erreur lors de l’ajout de la tâche !");
     }
-
-    const updatedColumn = [...board[column], task];
-    setBoard({ ...board, [column]: updatedColumn });
-    setNewTasks({ ...newTasks, [column]: "" });
-
-  } catch (err) {
-    console.error("❌ Erreur API complète :", err);
-    alert(err.message || "Erreur lors de l’ajout de la tâche !");
-  }
-};
-
+  };
 
   const onDragEnd = (result) => {
     const { source, destination } = result;
@@ -132,7 +140,7 @@ const handleAddTask = async (column) => {
     <div style={styles.pageBackground}>
       <div style={styles.topbar}>
         <span style={styles.userInfo}>
-          👤 Eingeloggt als: <strong>{localStorage.getItem("userEmail") || "Benutzer"}</strong>
+          👤 Eingeloggt als: <strong>{user?.username || "Benutzer"}</strong>
         </span>
         <button onClick={handleLogout} style={styles.logoutButton}>🚪 Logout</button>
       </div>

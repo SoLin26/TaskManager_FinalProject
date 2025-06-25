@@ -5,8 +5,8 @@ import User from "../models/User.js";
 
 const router = express.Router();
 
-// Registrierung
-router.post("/register", async (req, res) => {
+// ✅ Registrierung
+router.post("/register", async (req, res, next) => {
   try {
     const { fullname, username, email, password } = req.body;
 
@@ -18,50 +18,51 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ message: "Benutzer existiert bereits" });
     }
 
-    // Passwort hashen
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({ fullname, username, email, password: hashedPassword });
     await newUser.save();
 
-    res.status(201).json({
-      message: "Benutzer erfolgreich registriert",
-      user: {
-        id: newUser._id,
-        fullname: newUser.fullname,
-        username: newUser.username,
-        email: newUser.email
-      }
-    });
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "Lax",
+        maxAge: 3600000,
+      })
+      .status(201)
+      .json({
+        message: "Benutzer erfolgreich registriert",
+        user: {
+          id: newUser._id,
+          fullname: newUser.fullname,
+          username: newUser.username,
+          email: newUser.email,
+        },
+      });
   } catch (error) {
-     
     console.error("Registrierungsfehler:", error);
-    //res.status(500).json({ message: "Interner Serverfehler", error: error.message });
     next(error);
   }
 });
 
-// Login
+// ✅ Login
 router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
-
     const user = await User.findOne({ username });
-   
-    
+
     if (!user) {
-      
       return res.status(401).json({ message: "Ungültige Anmeldedaten" });
     }
-    console.log(password,user.password);
-    
+
     const validPassword = await bcrypt.compare(password, user.password);
-  
     if (!validPassword) {
       return res.status(401).json({ message: "Ungültige Anmeldedaten" });
     }
- 
-    // JWT Token erstellen
+
     const token = jwt.sign(
       {
         id: user._id,
@@ -71,11 +72,11 @@ router.post("/login", async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
-  // ✅ Définir le cookie
+
     res.cookie("token", token, {
       httpOnly: true,
-      maxAge: 3600000, // 1 heure
-      secure: false, // true si HTTPS
+      maxAge: 3600000,
+      secure: false,
       sameSite: "Lax",
     });
 
@@ -86,9 +87,9 @@ router.post("/login", async (req, res) => {
         fullname: user.fullname,
         username: user.username,
         email: user.email,
-        roles: user.roles
+        roles: user.roles,
       },
-      token // Token zurückgeben
+      token,
     });
   } catch (error) {
     console.error("Login-Fehler:", error);
@@ -96,43 +97,20 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Middleware zur Token-Authentifizierung (Optional, hier als Beispiel)
- const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-  if (!token) return res.sendStatus(401);
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
-    req.user = user;
-    next();
-  });
-};
-router.get('/me', (req, res, next) => {
-  // Retrieve the token from the HTTP-only cookie
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-  
+// ✅ Authentifizierter Zugriff über Cookie
+router.get("/me", (req, res, next) => {
+  const token = req.cookies.token;
 
   try {
     if (!token) {
-      return res.status(401).json({ msg: 'No token provided!' });
+      return res.status(401).json({ msg: "Kein Token vorhanden." });
     }
 
-    // Verify the token
-    const payload = jwt.verify(token, process.env.SECRET_JWT);
-    console.log(payload);
-
-    if (!payload) {
-      return res.status(401).json({ msg: 'Invalid token!' });
-    }
-
-    return res.json({ msg: 'Successful!', user: payload });
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    return res.json({ msg: "Erfolgreich!", user: payload });
   } catch (error) {
-    next(error);
+    return res.status(403).json({ msg: "Token ungültig." });
   }
 });
 
 export default router;
-
- 
