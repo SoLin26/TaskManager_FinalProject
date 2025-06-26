@@ -3,10 +3,16 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useNavigate } from "react-router-dom";
 
 const initialBoard = {
-  "⭐ Level 1": [],
-  "😃 Level 2": [],
-  "🦄 Level 3": [],
-  "📚 Learning": [],
+  "⭐ Level 1": [
+    { title: "Basic Terminal Usage", tagColor: "purple" },
+    { title: "Setup Guide", tagColor: "green" },
+  ],
+  "😃 Level 2": [{ title: "Basic Terminal Usage", tagColor: "purple" },
+    { title: "Setup Guide", tagColor: "green" },],
+  "🦄 Level 3": [{ title: "Basic Terminal Usage", tagColor: "purple" },
+    { title: "Setup Guide", tagColor: "green" },],
+  "📚 Learning": [{ title: "Basic Terminal Usage", tagColor: "purple" },
+    { title: "Setup Guide", tagColor: "green" },],
   "✅ Done": [],
 };
 
@@ -23,7 +29,6 @@ function Dashboard() {
 
   const navigate = useNavigate();
 
-  // ✅ Authentification via cookie
   useEffect(() => {
     fetch("http://localhost:8080/api/auth/me", {
       method: "GET",
@@ -37,12 +42,8 @@ function Dashboard() {
           setUser(data.user);
         }
       })
-      .catch((err) => {
-        console.error("Erreur auth:", err);
-        navigate("/login");
-      });
+      .catch(() => navigate("/login"));
   }, [navigate]);
-
 
   const descriptions = {
     "⭐ Level 1": "📱 Première étape : apprendre les bases, installer l’environnement, créer une app simple.",
@@ -50,47 +51,36 @@ function Dashboard() {
     "🦄 Level 3": "🚀 Automatiser, distribuer, et étendre tes connaissances Swift.",
   };
 
-  // ✅ Déconnexion via suppression du cookie
+  const getColor = (colorName) => {
+    const colors = {
+      purple: "#a259ff",
+      green: "#2ecc71",
+      blue: "#3498db",
+      red: "#e74c3c",
+      orange: "#e67e22",
+      gray: "#7f8c8d",
+    };
+    return colors[colorName] || "#ccc";
+  };
+
   const handleLogout = () => {
     fetch("http://localhost:8080/api/auth/logout", {
       method: "POST",
       credentials: "include",
     })
       .then(() => navigate("/login"))
-      .catch((err) => {
-        console.error("Erreur lors de la déconnexion", err);
-        navigate("/login");
-      });
+      .catch(() => navigate("/login"));
   };
 
-  // ✅ Ajout de tâche via cookie
   const handleAddTask = async (column) => {
     const task = newTasks[column];
     if (!task.trim()) return;
 
-    try {
-      const response = await fetch("http://localhost:8080/api/column/add-card", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ column, task }),
-      });
+    const newTaskObject = { title: task, tagColor: "gray" };
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Erreur lors de l’ajout de la tâche.");
-      }
-
-      const updatedColumn = [...board[column], task];
-      setBoard({ ...board, [column]: updatedColumn });
-      setNewTasks({ ...newTasks, [column]: "" });
-    } catch (err) {
-      console.error("❌ Erreur API complète :", err);
-      alert(err.message || "Erreur lors de l’ajout de la tâche !");
-    }
+    const updatedColumn = [...board[column], newTaskObject];
+    setBoard({ ...board, [column]: updatedColumn });
+    setNewTasks({ ...newTasks, [column]: "" });
   };
 
   const onDragEnd = (result) => {
@@ -174,29 +164,6 @@ function Dashboard() {
                     {column}
                   </h3>
                 )}
-
-                <div style={{ position: "relative" }}>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDropdownOpen(column);
-                    }}
-                    style={styles.menuButton}
-                  >
-                    ⋯
-                  </button>
-
-                  {dropdownOpen === column && (
-                    <div style={styles.dropdownMenu}>
-                      <button style={styles.dropdownMenuButton} onClick={() => navigate("/add-card")}>➕ Karte hinzufügen</button>
-                      <button style={styles.dropdownMenuButton} onClick={() => navigate("/copy-list")}>📋 Liste kopieren</button>
-                      <button style={styles.dropdownMenuButton} onClick={() => navigate("/move-list")}>↔️ Liste verschieben</button>
-                      <button style={styles.dropdownMenuButton} onClick={() => navigate("/move-all-cards")}>📦 Alle Karten verschieben</button>
-                      <button style={styles.dropdownMenuButton} onClick={() => navigate("/archive-list")}>🗃️ Liste archivieren</button>
-                      <button style={styles.dropdownMenuButton} onClick={() => navigate("/create-rule")}>⚙️ Regel erstellen</button>
-                    </div>
-                  )}
-                </div>
               </div>
 
               {descriptions[column] && <p style={styles.description}>{descriptions[column]}</p>}
@@ -221,10 +188,11 @@ function Dashboard() {
                             {...provided.dragHandleProps}
                             style={{
                               ...styles.card,
+                              borderLeft: `6px solid ${getColor(task.tagColor)}`,
                               ...provided.draggableProps.style,
                             }}
                           >
-                            {task}
+                            {task.title}
                           </div>
                         )}
                       </Draggable>
@@ -257,6 +225,7 @@ function Dashboard() {
 
 const styles = {
   pageBackground: {
+    backgroundColor: "pink",
     backgroundSize: "cover",
     backgroundPosition: "center",
     minHeight: "100vh",
@@ -296,7 +265,7 @@ const styles = {
     padding: "15px",
     width: "280px",
     minHeight: "350px",
-    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.15)",
+    boxShadow: "0 4px 10px rgba(82, 180, 210, 0.88)",
     backdropFilter: "blur(4px)",
     position: "relative",
   },
@@ -318,7 +287,7 @@ const styles = {
     padding: "10px",
     marginBottom: "10px",
     borderRadius: "8px",
-    boxShadow: "0 2px 6px rgba(0, 0, 0, 0.12)",
+    boxShadow: "0 2px 6px rgba(200, 123, 123, 0.89)",
     cursor: "grab",
   },
   input: {
@@ -340,36 +309,6 @@ const styles = {
     borderRadius: "4px",
     cursor: "pointer",
     fontWeight: "bold",
-  },
-  menuButton: {
-    background: "transparent",
-    border: "none",
-    fontSize: "20px",
-    cursor: "pointer",
-    padding: "0 5px",
-  },
-  dropdownMenu: {
-    position: "absolute",
-    top: "30px",
-    right: 0,
-    background: "#fff",
-    border: "1px solid #ccc",
-    borderRadius: "8px",
-    boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-    zIndex: 1000,
-    padding: "10px",
-    minWidth: "180px",
-  },
-  dropdownMenuButton: {
-    width: "100%",
-    padding: "8px",
-    marginBottom: "6px",
-    backgroundColor: "#f1f1f1",
-    border: "1px solid #ccc",
-    borderRadius: "6px",
-    textAlign: "left",
-    cursor: "pointer",
-    fontWeight: "500",
   },
 };
 
