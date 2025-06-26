@@ -15,7 +15,7 @@ const InviteForm = ({ boardId, onInviteSuccess }) => {
       }
 
       const res = await axios.post(
-        `http://localhost:5000/api/boards/${boardId}/invite`,
+        `http://localhost:8080api/boards/${boardId}/invite`,
         { email },
         { headers: { Authorization: `Bearer ${token}` } }
       );
