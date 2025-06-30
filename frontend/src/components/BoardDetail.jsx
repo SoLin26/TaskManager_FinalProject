@@ -41,7 +41,7 @@ const BoardDetail = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        `http://localhost:5000/api/boards/${id}/invite`,
+        `http://localhost:8080api/boards/${id}/invite`,
         { email: emailToInvite },
         {
           headers: {
@@ -60,7 +60,7 @@ const BoardDetail = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        `http://localhost:5000/api/boards/${id}`,
+        `http://localhost:8080/api/boards/${id}`,
         { title: newTitle },
         {
           headers: {
@@ -79,7 +79,7 @@ const BoardDetail = () => {
     if (!window.confirm("Board wirklich löschen?")) return;
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5000/api/boards/${id}`, {
+      await axios.delete(`http://localhost:8080/api/boards/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -21,7 +21,7 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.0",
-    "nodemailer": "^7.0.3",
+    "nodemailer": "^7.0.4",
     "react-datepicker": "^8.3.0"
   },
   "devDependencies": {
