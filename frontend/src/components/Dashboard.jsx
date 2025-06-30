@@ -43,7 +43,7 @@ function Dashboard() {
         }
       })
       .catch(() => navigate("/login"));
-  }, [navigate]);
+  }, []);
 
   const descriptions = {
     "⭐ Level 1": "📱 Première étape : apprendre les bases, installer l’environnement, créer une app simple.",
