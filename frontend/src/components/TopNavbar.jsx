@@ -34,8 +34,15 @@ function TopNavBar({ onLogout }) {
 
     try {
       const response = await fetch(`/api/search?q=${encodeURIComponent(searchTerm)}`);
+      if (!response.ok) {
+        console.log(response.statusText);
+        
+        throw new Error("Fehler bei der Suche: " + response.statusText);
+      }
       const data = await response.json();
-      setSearchResults(data.results || []);
+      console.log('data line 38: ',data);
+      
+     // setSearchResults(data.results || []);
     } catch (error) {
       console.error("Fehler bei der Suche:", error);
     }
