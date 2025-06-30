@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {render} from "react-dom";
+import {motion} from "framer-motion";
 import './LandingPage.css';
 
 function LandingPage({ onLogin }) {
@@ -138,7 +140,13 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           </p>
 
           {/* Registrierung */}
-          <div style={{ marginBottom: 20 }}>
+          <div className= "register-form" style={{ marginBottom: 20 }}>
+            <motion.div
+            animate= {{rotate: [0,200,360,0], x: [0,360,200,0]}}
+            transition={{repeat: 3 , duration: 1}}
+
+
+            ></motion.div>
             <input
               type="text"
               placeholder="Vollständiger Name"

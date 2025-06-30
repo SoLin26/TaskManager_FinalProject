@@ -41,7 +41,7 @@ function Dashboard() {
         console.error("Erreur auth:", err);
         navigate("/login");
       });
-  }, [navigate]);
+  }, []);
 
 
   const descriptions = {
