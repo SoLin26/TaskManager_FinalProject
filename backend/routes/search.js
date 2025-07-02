@@ -4,21 +4,24 @@ const router = express.Router();
 
 // Données fictives pour test
 const data = [
-  { type: "Aufgabe", title: "React lernen" },
+  { type: "Aufgaben", title: "React lernen" },
   { type: "Epic", title: "Final Project" },
   { type: "Sprint", title: "Sprint 3" },
   { type: "Aufgabe", title: "CSS verbessern" },
 ];
 
 // Route GET /api/search?q=...
-router.get("/", (req, res) => {
-  const query = req.query.q?.toLowerCase() || "";
+router.post("/", (req, res) => {
+  
+const search =req.body.search.toLowerCase()
+console.log(search);
 
   // Recherche dans `title` et `type`
   const results = data.filter((item) =>
-    item.title.toLowerCase().includes(query) ||
-    item.type.toLowerCase().includes(query)
+    item.title.toLowerCase().includes(search) ||
+    item.type.toLowerCase().includes(search)
   );
+console.log(results);
 
   res.json({ results });
 });

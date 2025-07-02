@@ -29,24 +29,31 @@ function TopNavBar({ onLogout }) {
     setActivePopup(null);
   };
 
-  const handleSearch = async () => {
-    if (!searchTerm.trim()) return;
+ const handleSearch = async () => {
+  if (!searchTerm.trim()) return;
 
-    try {
-      const response = await fetch(`/api/search?q=${encodeURIComponent(searchTerm)}`);
-      if (!response.ok) {
-        console.log(response.statusText);
-        
-        throw new Error("Fehler bei der Suche: " + response.statusText);
-      }
-      const data = await response.json();
-      console.log('data line 38: ',data);
-      
-     // setSearchResults(data.results || []);
-    } catch (error) {
-      console.error("Fehler bei der Suche:", error);
+  try {
+    const response = await fetch('http://localhost:8080/api/search', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ search: searchTerm }),
+    });
+
+    if (!response.ok) {
+      console.log(response.statusText);
+      throw new Error('Fehler bei der Suche: ' + response.statusText);
     }
-  };
+
+    const data = await response.json();
+    console.log('data line 38:', data);
+    
+     setSearchResults(data.results || []);
+  } catch (error) {
+    console.error('Fehler bei der Suche:', error);
+  }
+};
 
   const sendMarketingConsent = async (consent) => {
     try {
