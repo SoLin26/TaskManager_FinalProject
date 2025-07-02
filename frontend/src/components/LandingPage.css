@@ -2,10 +2,10 @@ html, body {
     background-color: white; /* Hintergrundfarbe auf weiß setzen */
     color: black; /* Schriftfarbe auf schwarz setzen */
 }
+
 * {
     box-sizing: border-box;
 }
-
 
 /* Obere Balken */
 .top-bar-blue {
@@ -38,8 +38,6 @@ html, body {
     background-color: #ffffff;
     gap: 100px;
     flex-wrap: nowrap;
-    width: 100%;
-    box-sizing: border-box;
 }
 
 /* Inhalt links */
@@ -60,8 +58,8 @@ html, body {
 }
 
 .landing-image img {
-    width: 200px;
-    height: 400px;
+    width: 100%;
+    height: auto; /* Erlaubt, dass das Bild seine Proportionen beibehält */
     border-radius: 12px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
@@ -89,7 +87,7 @@ html, body {
     font-size: 16px;
 }
 
-.landing-button {
+.landing-button, .modal-button {
     width: 100%;
     padding: 14px;
     background-color: #0079bf;
@@ -98,12 +96,12 @@ html, body {
     border-radius: 6px;
     font-size: 16px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.landing-button:hover {
+.landing-button:hover, .modal-button:hover {
     background-color: #005b9a;
-    transform: scale(1.03);
+    transform: scale(1.05);
 }
 
 .landing-terms {
@@ -202,7 +200,6 @@ html, body {
 .login-button:hover {
     transform: translateY(-50%) scale(1.1);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
-    background-color: #00437a;
 }
 
 /* Responsive Design */
@@ -225,11 +222,11 @@ html, body {
         text-align: center;
     }
 }
+
 .features-section,
 .testimonials-section,
 .pricing-section,
-.faq-section,
-.cta-section {
+.faq-section {
     background-color: #ffffff;
     color: #1a1a1a;
     padding: 60px 20px;
@@ -252,17 +249,57 @@ html, body {
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #f9f9f9;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Übergang für Transformation und Schatten */
 }
 
-.testimonial,
-.pricing-plan,
-.faq {
+.feature:hover {
+    transform: scale(1.15); /* Vergrößert die Kachel um 5% */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); /* Fügt einen Schatten hinzu */
+}
+
+/* Animation für den Rand */
+@keyframes borderAnimation {
+    0% {
+        border-color: #ddd; /* Ausgangsfarbe */
+    }
+    50% {
+        border-color: #0079bf; /* Helle Farbe */
+    }
+    100% {
+        border-color: #005b9a; /* Dunklere Farbe */
+    }
+}
+
+.testimonial {
     max-width: 600px;
     margin: 20px auto;
     padding: 20px;
     background-color: #f9f9f9;
     border-radius: 8px;
     border: 1px solid #ddd;
+    position: relative; /* Für die Animation */
+    overflow: hidden; /* Verhindert Überlauf */
+    transition: box-shadow 0.3s ease; /* Übergang für Schatten */
+}
+
+.testimonial:hover {
+    animation: borderAnimation 0.6s infinite; /* Animation beim Hover */
+    box-shadow: 0 4px 20px rgba(0, 121, 191, 0.5); /* Fügt einen Schatten hinzu */
+}
+
+/* Preispläne */
+.pricing-plan {
+    max-width: 300px; /* Maximalbreite für Preispläne */
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    transition: box-shadow 0.3s ease; /* Übergang für Schatten */
+}
+
+.pricing-plan:hover {
+    box-shadow: 0 4px 20px rgba(0, 121, 191, 0.5); /* Fügt einen Schatten hinzu */
 }
 
 .cta-button {
@@ -279,6 +316,7 @@ html, body {
 .cta-button:hover {
     background-color: #005b9a;
 }
+
 .footer {
     background-color: #f5f5f5;
     color: #333;
@@ -291,6 +329,7 @@ html, body {
     margin: 0 10px;
     text-decoration: none;
 }
+
 .features-link {
     display: inline-block;
     padding: 12px 20px;
@@ -299,17 +338,47 @@ html, body {
     text-decoration: none;
     font-size: 16px;
     transition: color 0.3s ease;
-  }
-  
-  .features-link:hover {
+}
+
+.features-link:hover {
     color: #00437a;
-  }
-  
-  .feature-image {
+}
+
+.feature-image {
     width: 100%;
     height: 160px;
     object-fit: cover;
     border-radius: 6px;
     margin-bottom: 15px;
-  }
-  
+}
+
+.video-container {
+    position: relative;
+    height: 60vh;
+    overflow: hidden;
+}
+
+.background-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.headline-text {
+    position: absolute;
+    top: 20%;
+    left: 10%;
+    color: white;
+    z-index: 10;
+}
+
+/* Fehlermeldungen */
+.message-success {
+    color: green;
+    font-weight: bold;
+}
+
+.message-error {
+    color: red;
+    font-weight: bold;
+}
