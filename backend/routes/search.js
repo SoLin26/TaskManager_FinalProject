@@ -8,6 +8,7 @@ const data = [
   { type: "Epic", title: "Final Project" },
   { type: "Sprint", title: "Sprint 3" },
   { type: "Aufgabe", title: "CSS verbessern" },
+  { type: "Übersicht", title: "Dashboard" },
 ];
 
 // Route GET /api/search?q=...

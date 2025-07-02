@@ -19,28 +19,79 @@
   text-decoration: none;
   transition: color 0.2s ease;
 }
+
+.popup a:hover {
+  color: #005bb5;
+}
+
 .search-popup {
-  padding: 10px;
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  width: 320px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  animation: fadeIn 0.3s ease-in-out;
+  z-index: 1000;
+  font-family: sans-serif;
 }
 
 .search-popup input {
-  width: 80%;
-  padding: 5px;
-  margin-bottom: 5px;
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s ease;
+}
+
+.search-popup input:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.search-popup button {
+  width: 100%;
+  padding: 10px;
+  background-color: #4a90e2;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.search-popup button:hover {
+  background-color: #357ab8;
 }
 
 .search-results {
-  margin-top: 10px;
+  margin-top: 12px;
   max-height: 200px;
   overflow-y: auto;
 }
 
 .search-item {
-  background-color: #f5f5f5;
-  padding: 5px;
-  margin-bottom: 4px;
-  border-radius: 4px;
+  background-color: #f0f4fa;
+  padding: 10px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
 }
+
+.search-item:hover {
+  background-color: #e2ebf9;
+}
+
+.search-item strong {
+  color: #2e6ddf;
+}
+
 .notification-popup {
   width: 320px;
   background: white;
@@ -68,7 +119,6 @@
   font-size: 12px;
 }
 
-/* Toggle Switch */
 .switch {
   position: relative;
   display: inline-block;
@@ -114,7 +164,6 @@ input:checked + .slider:before {
   transform: translateX(16px);
 }
 
-/* Body */
 .notification-body {
   margin-top: 12px;
 }
@@ -161,17 +210,11 @@ input:checked + .slider:before {
   margin-top: 8px;
 }
 
-.popup a:hover {
-  color: #005bb5;
+.top-navbar button {
+  margin-right: 10px;
 }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
-  
-  .top-navbar button {
-    margin-right: 10px;
-  }
-  
