@@ -177,25 +177,19 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             Durch Eingabe meiner E-Mail-Adresse erkenne ich die
             <a href="#"> Datenschutzrichtlinie</a> an.
           </p>
-          <button
-            className="landing-video-button"
-            onClick={() => setShowVideo(true)}
-          >
-            🎥 Video ansehen
-          </button>
-
-          {showVideo && (
-            <div className="landing-video">
-              <iframe
-                width="560"
-                height="315"
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                title="TaskHero Erklärvideo"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div>
+          <button className="landing-video-button" onClick={() => setShowVideo(true)}>🎥 Video ansehen</button>
+{showVideo && (
+  <div className="landing-video">
+    <iframe 
+      width="560" 
+      height="315" 
+      src="https://share.synthesia.io/1a7df56e-3c4a-4636-864c-2d53b0d52ac8" 
+      title="TaskHero Video" 
+      frameBorder="0" 
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+      allowFullScreen 
+    />
+  </div>
           )}
         </div>
 
@@ -284,7 +278,7 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         </div>
         <div className="pricing-plan">
           <h3>Teamplan</h3>
-          <p>Für Teams ab 5 Personen,xxxx pro Nutzer/Monat.</p>
+          <p>Für Teams ab 5 Personen, immer kostenfrei.</p>
         </div>
       </div>
 
