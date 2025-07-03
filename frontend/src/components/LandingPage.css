@@ -1,6 +1,9 @@
 html, body {
     background-color: white; /* Hintergrundfarbe auf weiß setzen */
     color: black; /* Schriftfarbe auf schwarz setzen */
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
 }
 
 * {
@@ -9,7 +12,7 @@ html, body {
 
 /* Obere Balken */
 .top-bar-blue {
-    width: 100%;
+    width: 100%;#0079bf
     height: 85px;
     background-color: #0079bf;
     position: relative;
@@ -36,14 +39,14 @@ html, body {
     padding: 40px 60px;
     min-height: calc(100vh - 110px);
     background-color: #ffffff;
-    gap: 100px;
-    flex-wrap: nowrap;
+    gap: 50px; /* etwas kleiner als vorher */
+    flex-wrap: wrap; /* erlaubt Zeilenumbruch, damit FAQ nicht rausgedrückt wird */
 }
 
 /* Inhalt links */
 .landing-content {
     max-width: 500px;
-    flex: 1;
+    flex: 1 1 500px; /* flex-grow, shrink und basis */
     display: flex;
     flex-direction: column;
     gap: 30px;
@@ -59,7 +62,7 @@ html, body {
 
 .landing-image img {
     width: 100%;
-    height: auto; /* Erlaubt, dass das Bild seine Proportionen beibehält */
+    height: auto; /* Bild-Proportionen erhalten */
     border-radius: 12px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
@@ -100,7 +103,7 @@ html, body {
 }
 
 .landing-button:hover, .modal-button:hover {
-    background-color: #005b9a;
+    background-color: #0079bf;
     transform: scale(1.05);
 }
 
@@ -233,6 +236,65 @@ html, body {
     width: 100%;
     box-sizing: border-box;
     text-align: center;
+    position: relative; /* wichtig für eventuelle z-index-Anpassungen */
+    z-index: 10;
+}
+
+/* FAQ Section */
+.faq-section {
+    max-width: 900px;
+    margin: 0 auto 80px auto;
+}
+
+/* Beispiel für FAQ Accordion Styles (kannst du anpassen oder erweitern) */
+.faq-question {
+    cursor: pointer;
+    font-weight: bold;
+    margin: 10px 0;
+    padding: 15px;
+    background-color: #f0f0f0;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.faq-question:hover {
+    background-color: #d9edf7;
+}
+
+.faq-answer {
+    padding: 10px 20px;
+    background-color: #fafafa;
+    border-left: 3px solid #0079bf;
+    margin-bottom: 15px;
+    display: none;
+}
+
+.faq-answer.active {
+    display: block;
+}
+
+/* Features & Testimonials */
+
+.top-bar-gray {
+  width: 100%;
+  height: 45px;
+  background-color: #e0e0e0;
+  display: flex;
+  justify-content: center;  /* horizontal zentrieren */
+  align-items: center;      /* vertikal zentrieren */
+  gap: 30px;                /* Abstand zwischen den Links */
+}
+
+.features-link {
+  color: #333;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.features-link:hover {
+  color: #0079bf; /* Blauton beim Hover */
 }
 
 .features {
@@ -249,24 +311,24 @@ html, body {
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #f9f9f9;
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Übergang für Transformation und Schatten */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .feature:hover {
-    transform: scale(1.15); /* Vergrößert die Kachel um 5% */
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); /* Fügt einen Schatten hinzu */
+    transform: scale(1.15);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 /* Animation für den Rand */
 @keyframes borderAnimation {
     0% {
-        border-color: #ddd; /* Ausgangsfarbe */
+        border-color: #ddd;
     }
     50% {
-        border-color: #0079bf; /* Helle Farbe */
+        border-color: #0079bf;
     }
     100% {
-        border-color: #005b9a; /* Dunklere Farbe */
+        border-color: #0079bf;
     }
 }
 
@@ -277,108 +339,26 @@ html, body {
     background-color: #f9f9f9;
     border-radius: 8px;
     border: 1px solid #ddd;
-    position: relative; /* Für die Animation */
-    overflow: hidden; /* Verhindert Überlauf */
-    transition: box-shadow 0.3s ease; /* Übergang für Schatten */
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
 }
 
 .testimonial:hover {
-    animation: borderAnimation 0.6s infinite; /* Animation beim Hover */
-    box-shadow: 0 4px 20px rgba(0, 121, 191, 0.5); /* Fügt einen Schatten hinzu */
+    animation: borderAnimation 0.6s infinite;
+    box-shadow: 0 4px 20px rgba(0, 121, 191, 0.5);
 }
 
 /* Preispläne */
 .pricing-plan {
-    max-width: 300px; /* Maximalbreite für Preispläne */
+    max-width: 300px;
     margin: 20px auto;
     padding: 20px;
     background-color: #f9f9f9;
     border-radius: 8px;
     border: 1px solid #ddd;
-    transition: box-shadow 0.3s ease; /* Übergang für Schatten */
+    transition: box-shadow 0.3s ease;
 }
 
 .pricing-plan:hover {
-    box-shadow: 0 4px 20px rgba(0, 121, 191, 0.5); /* Fügt einen Schatten hinzu */
-}
-
-.cta-button {
-    padding: 14px 28px;
-    background-color: #0079bf;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.cta-button:hover {
-    background-color: #005b9a;
-}
-
-.footer {
-    background-color: #f5f5f5;
-    color: #333;
-    text-align: center;
-    padding: 20px;
-}
-
-.footer a {
-    color: #0079bf;
-    margin: 0 10px;
-    text-decoration: none;
-}
-
-.features-link {
-    display: inline-block;
-    padding: 12px 20px;
-    color: #0079bf;
-    font-weight: bold;
-    text-decoration: none;
-    font-size: 16px;
-    transition: color 0.3s ease;
-}
-
-.features-link:hover {
-    color: #00437a;
-}
-
-.feature-image {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    border-radius: 6px;
-    margin-bottom: 15px;
-}
-
-.video-container {
-    position: relative;
-    height: 60vh;
-    overflow: hidden;
-}
-
-.background-video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.headline-text {
-    position: absolute;
-    top: 20%;
-    left: 10%;
-    color: white;
-    z-index: 10;
-}
-
-/* Fehlermeldungen */
-.message-success {
-    color: green;
-    font-weight: bold;
-}
-
-.message-error {
-    color: red;
-    font-weight: bold;
-}
+    box-shadow: 0 4px 20px rgba
