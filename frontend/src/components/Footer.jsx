@@ -4,7 +4,7 @@ import "./Footer.css";
 
 const Footer = () => {
   return (
-    <footer id="privacy" className="site-footer">
+    <footer id="privacy" className="site-footer" role="contentinfo">
       <div className="footer-inner">
         {/* Spalte 1 – Brand & Social */}
         <div className="footer-column brand">
@@ -14,27 +14,52 @@ const Footer = () => {
             mit klarer Struktur und moderner Oberfläche.
           </p>
           <div className="social-icons">
-            <a href="#"><FaFacebookF /></a>
-            <a href="#"><FaInstagram /></a>
-            <a href="#"><FaTwitter /></a>
+            <a
+              href="https://facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+            >
+              <FaFacebookF />
+            </a>
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
+              <FaInstagram />
+            </a>
+            <a
+              href="https://twitter.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Twitter"
+            >
+              <FaTwitter />
+            </a>
           </div>
         </div>
 
         {/* Spalte 2 – Service-Links */}
         <div className="footer-column">
           <h3>Service</h3>
-          <a href="#features">✨ Funktionen</a>
-          <a href="#pricing">💰 Preise</a>
-          <a href="#testimonials">✅ Bewertungen</a>
+          <ul>
+            <li><a href="#features">✨ Funktionen</a></li>
+            <li><a href="#pricing">💰 Preise</a></li>
+            <li><a href="#testimonials">✅ Bewertungen</a></li>
+          </ul>
         </div>
 
         {/* Spalte 3 – Company-Links */}
         <div className="footer-column">
           <h3>Unternehmen</h3>
-          <a href="#privacy">📜 Datenschutz</a>
-          <a href="/impressum">🧾 Impressum</a>
-          <a href="mailto:support@taskhero.de">📧 Kontakt</a>
-          <a href="#">AGB</a>
+          <ul>
+            <li><a href="#privacy">📜 Datenschutz</a></li>
+            <li><a href="/impressum">🧾 Impressum</a></li>
+            <li><a href="mailto:support@taskhero.de">📧 Kontakt</a></li>
+            <li><a href="#">📄 AGB</a></li>
+          </ul>
         </div>
       </div>
 
