@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import axios from "axios";
 
+
 // Komponenten
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
@@ -18,6 +19,9 @@ import BackButton from "./components/BackButton";
 import TopNavBar from "./components/TopNavbar";
 import Dashboard from "./components/Dashboard";
 import LandingPage from "./components/LandingPage";
+import Agb from "./components/Agb";
+
+
 import CalendarComponent from "./components/CalendarComponent";
 import AddMemberPopup from "./components/AddMemberPopup";
 import NotificationsPage from "./page/NotificationsPage";
