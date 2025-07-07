@@ -11,7 +11,7 @@ import axios from "axios";
 // Komponenten
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
-import Footer from "./components/Footer";
+import Footer from "./components/Footer"; // Footer importieren
 import TaskForum from "./components/TaskForum";
 import TaskList from "./components/TaskList";
 import BackButton from "./components/BackButton";
@@ -19,6 +19,7 @@ import TopNavBar from "./components/TopNavbar";
 import Dashboard from "./components/Dashboard";
 import LandingPage from "./components/LandingPage";
 import Agb from "./components/Agb";
+import Datenschutz from "./components/Datenschutz";
 
 import CalendarComponent from "./components/CalendarComponent";
 import AddMemberPopup from "./components/AddMemberPopup";
@@ -104,7 +105,7 @@ function App() {
             {children}
           </main>
         </div>
-        <Footer />
+        <Footer /> {/* Footer mit Logo */}
       </div>
     );
   };
@@ -116,10 +117,9 @@ function App() {
 
   return (
     <Routes>
-      {/* LandingPage öffentlich */}
+      {/* Öffentliche Routen */}
       <Route path="/" element={<LandingPage onLogin={handleLogin} />} />
-
-      {/* Öffentlich zugängliche Seite AGB */}
+      <Route path="/datenschutz" element={<Datenschutz />} />
       <Route path="/agb" element={<Agb />} />
 
       {/* Geschützte Routen */}
@@ -162,7 +162,7 @@ function App() {
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>
       ) : (
-        // Fallback für nicht eingeloggte Nutzer
+        /* Fallback für nicht eingeloggte Nutzer */
         <Route path="*" element={<Navigate to="/" replace />} />
       )}
 

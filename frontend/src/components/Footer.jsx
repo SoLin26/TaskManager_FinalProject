@@ -5,11 +5,13 @@ import "./Footer.css";
 
 const Footer = () => {
   return (
-    <footer id="privacy" className="site-footer" role="contentinfo">
+     <footer id="privacy" className="site-footer" role="contentinfo">
       <div className="footer-inner">
         {/* Spalte 1 – Brand & Social */}
         <div className="footer-column brand">
-          <h2 className="logo">TaskHero</h2>
+          <Link to="/" className="logo">
+            TaskHero
+          </Link>
           <p>
             Erfasse, organisiere und erledige deine Aufgaben ohne Chaos –
             mit klarer Struktur und moderner Oberfläche.
@@ -64,7 +66,7 @@ const Footer = () => {
         <div className="footer-column">
           <h3>Unternehmen</h3>
           <ul>
-            <li><a href="#privacy">📜 Datenschutz</a></li>
+            <li><Link to="/datenschutz">📜 Datenschutz</Link></li>
             <li><a href="/impressum">🧾 Impressum</a></li>
             <li><a href="mailto:support@taskhero.de">📧 Kontakt</a></li>
             <li><Link to="/agb">📄 AGB</Link></li>
