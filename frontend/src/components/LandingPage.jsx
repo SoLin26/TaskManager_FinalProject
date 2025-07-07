@@ -220,6 +220,7 @@ function LandingPage({ onLogin }) {
       </div>
 
       {/* FAQ mit Akkordeon */}
+      <h2>FAQ</h2>
      <FaqAccordion />
 
       {/* Footer */}

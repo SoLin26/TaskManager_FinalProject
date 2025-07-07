@@ -1,5 +1,5 @@
 import React from "react";
-import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaTwitter, FaWhatsapp } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import "./Footer.css";
 
@@ -39,6 +39,14 @@ const Footer = () => {
             >
               <FaTwitter />
             </a>
+            <a
+              href="https://wa.me/491234567890" // Ersetze mit deiner WhatsApp-Nummer
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp"
+            >
+              <FaWhatsapp />
+            </a>
           </div>
         </div>
 
@@ -48,7 +56,7 @@ const Footer = () => {
           <ul>
             <li><a href="#features">✨ Funktionen</a></li>
             <li><a href="#pricing">💰 Preise</a></li>
-            <li><a href="#testimonials">✅ Bewertungen</a></li>
+            <li><a href="#testimonials">✅ Nutzerstimmen</a></li>
           </ul>
         </div>
 

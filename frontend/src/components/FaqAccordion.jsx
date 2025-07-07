@@ -10,7 +10,7 @@ const faqs = [
   {
     question: "Ist TaskHero kostenlos?",
     answer:
-      "TaskHero bietet eine kostenlose Basisversion. Premium-Funktionen sind kostenpflichtig.",
+      "TaskHero bietet eine kostenlose Basisversion. Premium-Funktionen sind kostenfrei",
   },
   {
     question: "Kann ich meine Daten exportieren?",
