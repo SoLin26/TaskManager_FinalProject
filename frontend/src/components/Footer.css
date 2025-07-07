@@ -47,7 +47,7 @@
 }
 
 .footer-column a:hover {
-  color: #4f46e5; /* Indigo */
+  color: #ef9ef1;
   text-decoration: underline;
 }
 
@@ -56,8 +56,15 @@
   font-size: 1.8rem;
   font-weight: bold;
   margin-bottom: 1rem;
-  color: #ef9ef1; /* Gelb */
+  color: #ef9ef1; 
+  text-decoration: none; /* Link-Unterstreichung entfernen */
+  cursor: pointer; /* Zeigt Mauszeiger Hand */
 }
+
+.logo:hover {
+  text-decoration: underline; /* Optional: Hover-Effekt */
+}
+
 
 .brand p {
   font-size: 14px;
