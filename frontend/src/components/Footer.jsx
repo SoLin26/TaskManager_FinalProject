@@ -1,5 +1,6 @@
 import React from "react";
 import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import "./Footer.css";
 
 const Footer = () => {
@@ -58,7 +59,7 @@ const Footer = () => {
             <li><a href="#privacy">📜 Datenschutz</a></li>
             <li><a href="/impressum">🧾 Impressum</a></li>
             <li><a href="mailto:support@taskhero.de">📧 Kontakt</a></li>
-            <li><a href="#">📄 AGB</a></li>
+            <li><Link to="/agb">📄 AGB</Link></li>
           </ul>
         </div>
       </div>

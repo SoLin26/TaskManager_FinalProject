@@ -201,7 +201,7 @@ function LandingPage({ onLogin }) {
       {/* Funktionen */}
      <FeaturesSection />
      <div id="faq">
-  <FaqAccordion />
+  
 </div>
 
       {/* Testimonials */}
