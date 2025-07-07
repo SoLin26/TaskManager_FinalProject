@@ -12,6 +12,7 @@ import Member from "./models/Member.js";
 import notificationsRoute from "./routes/notifications.js";
 import searchRoutes from "./routes/search.js";
 
+
 dotenv.config();
 
 const app = express();
@@ -36,6 +37,7 @@ app.use("/api/todos", todoRoutes);
 app.use("/api/boards", boardRoutes);
 
 app.use("/api/search", searchRoutes);
+
 
 
 // Routes de test (membres, tâches, invitation)
