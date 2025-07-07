@@ -41,7 +41,7 @@ const BoardDetail = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        `http://localhost:8080api/boards/${id}/invite`,
+        `http://localhost:8080/api/boards/${id}/invite`,
         { email: emailToInvite },
         {
           headers: {

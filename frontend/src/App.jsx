@@ -8,7 +8,6 @@ import {
 } from "react-router-dom";
 import axios from "axios";
 
-
 // Komponenten
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
@@ -20,7 +19,6 @@ import TopNavBar from "./components/TopNavbar";
 import Dashboard from "./components/Dashboard";
 import LandingPage from "./components/LandingPage";
 import Agb from "./components/Agb";
-
 
 import CalendarComponent from "./components/CalendarComponent";
 import AddMemberPopup from "./components/AddMemberPopup";
@@ -120,6 +118,9 @@ function App() {
     <Routes>
       {/* LandingPage öffentlich */}
       <Route path="/" element={<LandingPage onLogin={handleLogin} />} />
+
+      {/* Öffentlich zugängliche Seite AGB */}
+      <Route path="/agb" element={<Agb />} />
 
       {/* Geschützte Routen */}
       {isLoggedIn ? (
