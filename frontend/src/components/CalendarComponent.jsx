@@ -4,6 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import "../components/Calendar.css";
 
+
 function CalendarComponent() {
   const [events, setEvents] = useState([]);
   const token = localStorage.getItem("token");

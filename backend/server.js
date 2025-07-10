@@ -37,7 +37,7 @@ app.use("/api/todos", todoRoutes);
 app.use("/api/boards", boardRoutes);
 
 app.use("/api/search", searchRoutes);
-
+app.use("/api/boards", boardRoutes);
 
 
 // Routes de test (membres, tâches, invitation)

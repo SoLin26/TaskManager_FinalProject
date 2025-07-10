@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useNavigate } from "react-router-dom";
+import fleure12 from "../../Photo/fleure12.png";
+
 
 const initialBoard = {
   "⭐ Level 1": [
@@ -225,10 +227,12 @@ function Dashboard() {
 
 const styles = {
   pageBackground: {
+    backgroundImage: `url(${fleure12})`,
     backgroundColor: "pink",
     backgroundSize: "cover",
     backgroundPosition: "center",
     minHeight: "100vh",
+    
   },
   topbar: {
     display: "flex",
