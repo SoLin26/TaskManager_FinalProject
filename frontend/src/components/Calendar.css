@@ -56,4 +56,21 @@
   .event-form button:hover {
     background-color: #0056b3;
   }
-  
+  /* Lignes des jours */
+.fc-theme-standard td, 
+.fc-theme-standard th {
+  border: 1px solid rgba(0, 0, 0, 0.3); /* gris semi-transparent */
+}
+
+/* Bordure extérieure du calendrier */
+.fc {
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+}
+
+/* Optionnel : couleur du fond des jours */
+.fc-daygrid-day-frame {
+  background-color: rgba(255, 255, 255, 0.4); /* pour rendre les jours plus lisibles */
+  backdrop-filter: blur(3px); /* joli flou */
+  border-radius: 4px;
+}

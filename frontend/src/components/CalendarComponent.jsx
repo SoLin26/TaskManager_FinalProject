@@ -3,6 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import "../components/Calendar.css";
+import blumen from "../../Photo/fleure12.png";
 
 
 function CalendarComponent() {
@@ -47,7 +48,7 @@ function CalendarComponent() {
   }, [token]);
 
   return (
-    <div style={{ padding: "20px" }}>
+     <div style={styles.pageBackground}>
       <h2>📆 Mon calendrier pro</h2>
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
@@ -58,5 +59,13 @@ function CalendarComponent() {
     </div>
   );
 }
-
+const styles = {
+  pageBackground: {
+    backgroundImage: `url(${blumen})`,
+    backgroundColor: "pink",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    minHeight: "100vh",
+    
+  }}
 export default CalendarComponent;
