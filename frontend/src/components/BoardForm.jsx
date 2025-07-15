@@ -18,7 +18,12 @@ const BoardForm = ({ onBoardCreated }) => {
       await axios.post(
         "http://localhost:8080/api/boards",
         { title, description },
-         { withCredentials: true }
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setTitle("");
       setDescription("");
@@ -39,7 +44,7 @@ const BoardForm = ({ onBoardCreated }) => {
         display: "flex",
         alignItems: "flex-start",
         gap: "1rem",
-        flexWrap: "wrap", // damit es auf kleinen Screens umbricht
+        flexWrap: "wrap",
       }}
     >
       <input

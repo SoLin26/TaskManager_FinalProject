@@ -14,10 +14,10 @@ const BoardDetail = () => {
   useEffect(() => {
     const fetchBoard = async () => {
       try {
-      
-        const response = await axios.get(`http://localhost:8080/api/boards/${id}`, {
-          withCredentials: true
-        });
+        const response = await axios.get(
+          `http://localhost:8080/api/boards/${id}`,
+          { withCredentials: true } // ✅ Cookie senden
+        );
         setBoard(response.data);
         setNewTitle(response.data.title);
         setError(null);
@@ -29,23 +29,13 @@ const BoardDetail = () => {
     };
     fetchBoard();
   }, [id]);
-  
-
-
-
-  
 
   const handleInvite = async () => {
     try {
-      const token = localStorage.getItem("token");
       await axios.post(
         `http://localhost:8080/api/boards/${id}/invite`,
         { email: emailToInvite },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { withCredentials: true } // ✅ Cookie senden
       );
       alert("Einladung gesendet!");
       setEmailToInvite("");
@@ -56,11 +46,10 @@ const BoardDetail = () => {
 
   const handleUpdate = async () => {
     try {
-     
       const response = await axios.put(
         `http://localhost:8080/api/boards/${id}`,
         { title: newTitle },
-        { withCredentials: true }
+        { withCredentials: true } // ✅ Cookie senden
       );
       setBoard(response.data);
       alert("Board aktualisiert");
@@ -72,10 +61,10 @@ const BoardDetail = () => {
   const handleDelete = async () => {
     if (!window.confirm("Board wirklich löschen?")) return;
     try {
-      
-      await axios.delete(`http://localhost:8080/api/boards/${id}`, {
-         withCredentials: true
-      });
+      await axios.delete(
+        `http://localhost:8080/api/boards/${id}`,
+        { withCredentials: true } // ✅ Cookie senden
+      );
       alert("Board gelöscht");
       navigate("/boards");
     } catch {
@@ -90,6 +79,7 @@ const BoardDetail = () => {
   return (
     <div style={{ padding: "1rem", maxWidth: "800px", margin: "0 auto" }}>
       <h2>Board: {board.title}</h2>
+
       <input
         type="text"
         value={newTitle}
@@ -114,13 +104,17 @@ const BoardDetail = () => {
           border: "none",
           borderRadius: "6px",
           cursor: "pointer",
-          transition: "background-color 0.3s ease",
         }}
-        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#059669")}
-        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#10b981")}
+        onMouseOver={(e) =>
+          (e.currentTarget.style.backgroundColor = "#059669")
+        }
+        onMouseOut={(e) =>
+          (e.currentTarget.style.backgroundColor = "#10b981")
+        }
       >
         Ändern
       </button>
+
       <button
         onClick={handleDelete}
         style={{
@@ -132,10 +126,13 @@ const BoardDetail = () => {
           border: "none",
           borderRadius: "6px",
           cursor: "pointer",
-          transition: "background-color 0.3s ease",
         }}
-        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#b91c1c")}
-        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#ef4444")}
+        onMouseOver={(e) =>
+          (e.currentTarget.style.backgroundColor = "#b91c1c")
+        }
+        onMouseOut={(e) =>
+          (e.currentTarget.style.backgroundColor = "#ef4444")
+        }
       >
         Löschen
       </button>
@@ -183,10 +180,13 @@ const BoardDetail = () => {
             border: "none",
             borderRadius: "6px",
             cursor: "pointer",
-            transition: "background-color 0.3s ease",
           }}
-          onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#2563eb")}
-          onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#3b82f6")}
+          onMouseOver={(e) =>
+            (e.currentTarget.style.backgroundColor = "#2563eb")
+          }
+          onMouseOut={(e) =>
+            (e.currentTarget.style.backgroundColor = "#3b82f6")
+          }
         >
           Einladen
         </button>

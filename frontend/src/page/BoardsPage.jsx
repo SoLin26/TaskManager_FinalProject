@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 import BoardForm from "../components/BoardForm";
 import InviteForm from "../components/InviteForm";
-import axios from "axios";
-import { jwtDecode } from "jwt-decode"; // korrigiert: 'jwtDecode' nicht in {} importieren
-import { useNavigate } from "react-router-dom";
 import TaskListMini from "../components/TaskListMini";
 
 const BoardsPage = () => {
@@ -11,16 +11,24 @@ const BoardsPage = () => {
   const [currentUserId, setCurrentUserId] = useState(null);
   const navigate = useNavigate();
 
-  // Benutzer-ID aus dem Token auslesen
- 
+  // 👤 Hole eingeloggten User vom Server
+  const fetchCurrentUser = async () => {
+    try {
+      const res = await axios.get("http://localhost:8080/api/auth/me", {
+        withCredentials: true,
+      });
+      setCurrentUserId(res.data.user.id);
+    } catch (err) {
+      console.error("Benutzer nicht eingeloggt oder Token ungültig:", err.message);
+      navigate("/"); // Zurück zur Startseite, wenn nicht eingeloggt
+    }
+  };
 
   const fetchBoards = async () => {
-    try {   
-
+    try {
       const res = await axios.get("http://localhost:8080/api/boards", {
-          withCredentials: true
+        withCredentials: true,
       });
-
       setBoards(res.data);
     } catch (err) {
       console.error("Fehler beim Laden der Boards:", err.message);
@@ -28,6 +36,7 @@ const BoardsPage = () => {
   };
 
   useEffect(() => {
+    fetchCurrentUser();
     fetchBoards();
   }, []);
 
@@ -38,9 +47,8 @@ const BoardsPage = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Board wirklich löschen?")) return;
     try {
-     
       await axios.delete(`http://localhost:8080/api/boards/${id}`, {
-        withCredentials: true
+        withCredentials: true,
       });
       fetchBoards();
     } catch (error) {
@@ -51,28 +59,22 @@ const BoardsPage = () => {
 
   const handleEdit = async (board) => {
     const newTitle = prompt("Neuer Board-Titel:", board.title);
-    const newDescription = prompt(
-      "Neue Beschreibung:",
-      board.description || ""
-    );
+    const newDescription = prompt("Neue Beschreibung:", board.description || "");
     if (!newTitle) return;
 
     try {
-  
       await axios.put(
         `http://localhost:8080/api/boards/${board._id}`,
         {
           title: newTitle,
           description: newDescription,
         },
-         { withCredentials: true }
+        { withCredentials: true }
       );
       fetchBoards();
     } catch (error) {
       if (error.response) {
-        alert(
-          `Fehler: ${error.response.status} - ${error.response.data.message}`
-        );
+        alert(`Fehler: ${error.response.status} - ${error.response.data.message}`);
       } else {
         alert("Unbekannter Fehler beim Bearbeiten");
       }
@@ -106,10 +108,10 @@ const BoardsPage = () => {
                   {board.description || "Keine Beschreibung"}
                 </p>
 
-                {/* Mini Task List für dieses Board */}
                 <TaskListMini boardId={board._id} />
 
-                {currentUserId && ownerId === currentUserId && (
+                {/* Bearbeiten/Löschen nur für Besitzer */}
+                {currentUserId && currentUserId === ownerId && (
                   <>
                     <InviteForm
                       boardId={board._id}
