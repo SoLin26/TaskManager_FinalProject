@@ -142,91 +142,9 @@ const BoardDetail = () => {
   if (!board) return <p>Kein Board gefunden</p>;
 
   return (
-<<<<<<< HEAD
-    <div style={{ padding: "1rem", maxWidth: "800px", margin: "0 auto" }}>
-      <h2>Board: {board.title}</h2>
-
-      <input
-        type="text"
-        value={newTitle}
-        onChange={(e) => setNewTitle(e.target.value)}
-        placeholder="Boardtitel ändern"
-        style={{
-          padding: "8px",
-          fontSize: "1rem",
-          width: "60%",
-          marginRight: "10px",
-          borderRadius: "6px",
-          border: "1px solid #ccc",
-        }}
-      />
-      <button
-        onClick={handleUpdate}
-        style={{
-          padding: "8px 16px",
-          fontSize: "1rem",
-          backgroundColor: "#10b981",
-          color: "white",
-          border: "none",
-          borderRadius: "6px",
-          cursor: "pointer",
-        }}
-        onMouseOver={(e) =>
-          (e.currentTarget.style.backgroundColor = "#059669")
-        }
-        onMouseOut={(e) =>
-          (e.currentTarget.style.backgroundColor = "#10b981")
-        }
-      >
-        Ändern
-      </button>
-
-      <button
-        onClick={handleDelete}
-        style={{
-          marginLeft: "10px",
-          padding: "8px 16px",
-          fontSize: "1rem",
-          backgroundColor: "#ef4444",
-          color: "white",
-          border: "none",
-          borderRadius: "6px",
-          cursor: "pointer",
-        }}
-        onMouseOver={(e) =>
-          (e.currentTarget.style.backgroundColor = "#b91c1c")
-        }
-        onMouseOut={(e) =>
-          (e.currentTarget.style.backgroundColor = "#ef4444")
-        }
-      >
-        Löschen
-      </button>
-
-      <p style={{ marginTop: "20px" }}>
-        <strong>Owner:</strong> {board.owner?.fullname} ({board.owner?.email})
-      </p>
-
-      <h3>Mitglieder</h3>
-      {board.members && board.members.length > 0 ? (
-        <ul>
-          {board.members.map((member) => (
-            <li key={member.user._id}>
-              {member.user.fullname} ({member.user.email}) - Rolle: {member.role}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>Keine Mitglieder gefunden.</p>
-      )}
-
-      <div style={{ marginTop: "2rem" }}>
-        <h4>Mitglied einladen</h4>
-=======
     <div style={styles.pageBackground}>
       <div style={styles.container}>
         <h2>Board: {board.title}</h2>
->>>>>>> 9e562dc (faux)
         <input
           type="text"
           value={newTitle}
@@ -235,29 +153,10 @@ const BoardDetail = () => {
           style={styles.input}
         />
         <button
-<<<<<<< HEAD
-          onClick={handleInvite}
-          style={{
-            padding: "8px 16px",
-            fontSize: "1rem",
-            backgroundColor: "#3b82f6",
-            color: "white",
-            border: "none",
-            borderRadius: "6px",
-            cursor: "pointer",
-          }}
-          onMouseOver={(e) =>
-            (e.currentTarget.style.backgroundColor = "#2563eb")
-          }
-          onMouseOut={(e) =>
-            (e.currentTarget.style.backgroundColor = "#3b82f6")
-          }
-=======
           onClick={handleUpdate}
           style={{ ...styles.btn, ...styles.updateBtn }}
           onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#059669")}
           onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#10b981")}
->>>>>>> 9e562dc (faux)
         >
           Ändern
         </button>

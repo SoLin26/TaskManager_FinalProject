@@ -20,7 +20,7 @@ import Dashboard from "./components/Dashboard";
 import LandingPage from "./components/LandingPage";
 import Agb from "./components/Agb";
 import Datenschutz from "./components/Datenschutz";
-
+import Sprints from "./components/Sprints"; // neu importieren
 import CalendarComponent from "./components/CalendarComponent";
 import AddMemberPopup from "./components/AddMemberPopup";
 import NotificationsPage from "./page/NotificationsPage";
@@ -121,6 +121,10 @@ function App() {
       <Route path="/" element={<LandingPage onLogin={handleLogin} />} />
       <Route path="/datenschutz" element={<Datenschutz />} />
       <Route path="/agb" element={<Agb />} />
+      <Route
+  path="/sprints"
+  element={<LoggedInLayout><Sprints /></LoggedInLayout>}
+/>
 
       {/* Geschützte Routen */}
       {isLoggedIn ? (
