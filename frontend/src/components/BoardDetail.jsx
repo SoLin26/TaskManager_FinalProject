@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import papillion from "../../Photo/papillion.jpg";
 
 const BoardDetail = () => {
   const { id } = useParams();
@@ -72,11 +73,76 @@ const BoardDetail = () => {
     }
   };
 
+  // Animation keyframes (injected via JS)
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.innerHTML = `
+      @keyframes fadeIn {
+        0% { opacity: 0; transform: scale(1.02); }
+        100% { opacity: 1; transform: scale(1); }
+      }
+    `;
+    document.head.appendChild(style);
+  }, []);
+
+  const styles = {
+
+    pageBackground: {
+      backgroundColor: "lightblue",
+      backgroundImage: `url(${papillion})`,
+       backdropFilter: "blur(4px)",
+       
+
+
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      minHeight: "100vh",
+      padding: "1rem",
+      animation: "fadeIn 2s ease-in-out",
+    },
+    container: {
+      maxWidth: "800px",
+      margin: "0 auto",
+      backgroundColor: "rgba(227, 72, 191, 0.9)",
+      padding: "20px",
+      borderRadius: "12px",
+    },
+    input: {
+      padding: "8px",
+      fontSize: "1rem",
+      width: "60%",
+      marginRight: "10px",
+      borderRadius: "6px",
+      border: "1px solid #ccc",
+    },
+    btn: {
+      padding: "8px 16px",
+      fontSize: "1rem",
+      color: "white",
+      border: "none",
+      borderRadius: "6px",
+      cursor: "pointer",
+      transition: "all 0.3s ease",
+      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+    },
+    updateBtn: {
+      backgroundColor: "#10b981",
+    },
+    deleteBtn: {
+      backgroundColor: "#ef4444",
+      marginLeft: "10px",
+    },
+    inviteBtn: {
+      backgroundColor: "#3b82f6",
+    },
+  };
+
   if (loading) return <p>Lädt...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
   if (!board) return <p>Kein Board gefunden</p>;
 
   return (
+<<<<<<< HEAD
     <div style={{ padding: "1rem", maxWidth: "800px", margin: "0 auto" }}>
       <h2>Board: {board.title}</h2>
 
@@ -156,21 +222,20 @@ const BoardDetail = () => {
 
       <div style={{ marginTop: "2rem" }}>
         <h4>Mitglied einladen</h4>
+=======
+    <div style={styles.pageBackground}>
+      <div style={styles.container}>
+        <h2>Board: {board.title}</h2>
+>>>>>>> 9e562dc (faux)
         <input
-          type="email"
-          value={emailToInvite}
-          onChange={(e) => setEmailToInvite(e.target.value)}
-          placeholder="E-Mail eingeben"
-          style={{
-            padding: "8px",
-            fontSize: "1rem",
-            width: "60%",
-            marginRight: "10px",
-            borderRadius: "6px",
-            border: "1px solid #ccc",
-          }}
+          type="text"
+          value={newTitle}
+          onChange={(e) => setNewTitle(e.target.value)}
+          placeholder="Boardtitel ändern"
+          style={styles.input}
         />
         <button
+<<<<<<< HEAD
           onClick={handleInvite}
           style={{
             padding: "8px 16px",
@@ -187,9 +252,59 @@ const BoardDetail = () => {
           onMouseOut={(e) =>
             (e.currentTarget.style.backgroundColor = "#3b82f6")
           }
+=======
+          onClick={handleUpdate}
+          style={{ ...styles.btn, ...styles.updateBtn }}
+          onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#059669")}
+          onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#10b981")}
+>>>>>>> 9e562dc (faux)
         >
-          Einladen
+          Ändern
         </button>
+        <button
+          onClick={handleDelete}
+          style={{ ...styles.btn, ...styles.deleteBtn }}
+          onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#b91c1c")}
+          onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#ef4444")}
+        >
+          Löschen
+        </button>
+
+        <p style={{ marginTop: "20px" }}>
+          <strong>Owner:</strong> {board.owner?.fullname} ({board.owner?.email})
+        </p>
+
+        <h3>Mitglieder</h3>
+        {board.members && board.members.length > 0 ? (
+          <ul>
+            {board.members.map((member) => (
+              <li key={member.user._id}>
+                {member.user.fullname} ({member.user.email}) - Rolle: {member.role}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>Keine Mitglieder gefunden.</p>
+        )}
+
+        <div style={{ marginTop: "2rem" }}>
+          <h4>Mitglied einladen</h4>
+          <input
+            type="email"
+            value={emailToInvite}
+            onChange={(e) => setEmailToInvite(e.target.value)}
+            placeholder="E-Mail eingeben"
+            style={styles.input}
+          />
+          <button
+            onClick={handleInvite}
+            style={{ ...styles.btn, ...styles.inviteBtn }}
+            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#2563eb")}
+            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#3b82f6")}
+          >
+            Einladen
+          </button>
+        </div>
       </div>
     </div>
   );
