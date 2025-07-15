@@ -22,11 +22,11 @@ function TaskList() {
 
   // Boards laden beim Start
   useEffect(() => {
-    if (!token) return;
+   
     setLoadingBoards(true);
 
     fetch(API_BOARDS, {
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     })
       .then(async (res) => {
         if (!res.ok) throw new Error(`Fehler beim Laden der Boards: ${res.status}`);
@@ -51,7 +51,7 @@ function TaskList() {
     setLoadingTodos(true);
 
     fetch(`${API_TODOS}?boardId=${selectedBoardId}`, {
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     })
       .then(async (res) => {
         if (!res.ok) throw new Error(`Fehler beim Laden der Todos: ${res.status}`);
@@ -82,8 +82,9 @@ function TaskList() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+       
         },
+        credentials: "include",
         body: JSON.stringify({
           title: newTitle,
           column: newColumn,
@@ -125,8 +126,9 @@ function TaskList() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+         
         },
+        credentials: "include",
         body: JSON.stringify({
           title: editTitle,
           column: editColumn,
@@ -149,7 +151,7 @@ function TaskList() {
     try {
       const res = await fetch(`${API_TODOS}/${id}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
       });
       if (!res.ok) throw new Error("Fehler beim Löschen");
       setTodos((prev) => prev.filter((todo) => todo._id !== id));

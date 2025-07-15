@@ -12,30 +12,13 @@ const BoardsPage = () => {
   const navigate = useNavigate();
 
   // Benutzer-ID aus dem Token auslesen
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        setCurrentUserId(decoded.id);
-      } catch (err) {
-        console.error("Token decode Fehler:", err);
-      }
-    }
-  }, []);
+ 
 
   const fetchBoards = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("Kein Token gefunden");
-        return;
-      }
+    try {   
 
       const res = await axios.get("http://localhost:8080/api/boards", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          withCredentials: true
       });
 
       setBoards(res.data);
@@ -55,11 +38,9 @@ const BoardsPage = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Board wirklich löschen?")) return;
     try {
-      const token = localStorage.getItem("token");
+     
       await axios.delete(`http://localhost:8080/api/boards/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        withCredentials: true
       });
       fetchBoards();
     } catch (error) {
@@ -77,18 +58,14 @@ const BoardsPage = () => {
     if (!newTitle) return;
 
     try {
-      const token = localStorage.getItem("token");
+  
       await axios.put(
         `http://localhost:8080/api/boards/${board._id}`,
         {
           title: newTitle,
           description: newDescription,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+         { withCredentials: true }
       );
       fetchBoards();
     } catch (error) {

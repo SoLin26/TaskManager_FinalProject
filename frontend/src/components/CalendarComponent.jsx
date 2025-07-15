@@ -8,15 +8,14 @@ import blumen from "../../Photo/fleure12.png";
 
 function CalendarComponent() {
   const [events, setEvents] = useState([]);
-  const token = localStorage.getItem("token");
+  
 
   useEffect(() => {
     const fetchTodos = async () => {
       try {
         const res = await fetch("http://localhost:8080/api/todos", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        credentials: "include"
+         
         });
         if (!res.ok) throw new Error("Fehler beim Laden der Todos");
         const todos = await res.json();
@@ -44,8 +43,8 @@ function CalendarComponent() {
       }
     };
 
-    if (token) fetchTodos();
-  }, [token]);
+   fetchTodos();
+  }, []);
 
   return (
      <div style={styles.pageBackground}>

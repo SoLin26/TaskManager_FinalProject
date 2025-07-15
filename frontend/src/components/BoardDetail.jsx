@@ -14,11 +14,9 @@ const BoardDetail = () => {
   useEffect(() => {
     const fetchBoard = async () => {
       try {
-        const token = localStorage.getItem("token");
+      
         const response = await axios.get(`http://localhost:8080/api/boards/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          withCredentials: true
         });
         setBoard(response.data);
         setNewTitle(response.data.title);
@@ -58,15 +56,11 @@ const BoardDetail = () => {
 
   const handleUpdate = async () => {
     try {
-      const token = localStorage.getItem("token");
+     
       const response = await axios.put(
         `http://localhost:8080/api/boards/${id}`,
         { title: newTitle },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { withCredentials: true }
       );
       setBoard(response.data);
       alert("Board aktualisiert");
@@ -78,11 +72,9 @@ const BoardDetail = () => {
   const handleDelete = async () => {
     if (!window.confirm("Board wirklich löschen?")) return;
     try {
-      const token = localStorage.getItem("token");
+      
       await axios.delete(`http://localhost:8080/api/boards/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+         withCredentials: true
       });
       alert("Board gelöscht");
       navigate("/boards");

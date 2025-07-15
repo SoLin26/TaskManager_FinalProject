@@ -70,12 +70,12 @@ router.post("/login", async (req, res) => {
         roles: user.roles,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "24h" }
     );
 
     res.cookie("token", token, {
       httpOnly: true,
-      maxAge: 3600000,
+      maxAge: 3600000*24,
       secure: false,
       sameSite: "Lax",
     });
@@ -88,8 +88,8 @@ router.post("/login", async (req, res) => {
         username: user.username,
         email: user.email,
         roles: user.roles,
-      },
-      token,
+      }
+      
     });
   } catch (error) {
     console.error("Login-Fehler:", error);

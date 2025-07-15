@@ -32,6 +32,7 @@ router.get("/", auth, async (req, res) => {
     const todos = await Todo.find(filter);
     res.json(todos);
   } catch (err) {
+    console.log(err);    
     res.status(500).json({ message: "Fehler beim Laden der Todos." });
   }
 });

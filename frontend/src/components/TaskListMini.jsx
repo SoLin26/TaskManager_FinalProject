@@ -5,10 +5,10 @@ function TaskListMini({ boardId }) {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    if (!token || !boardId) return;
+   
 
     fetch(`http://localhost:8080/api/todos?boardId=${boardId}`, {
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     })
       .then((res) => {
         if (!res.ok) throw new Error("Fehler beim Laden der Aufgaben");

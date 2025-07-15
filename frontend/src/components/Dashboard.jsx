@@ -32,19 +32,26 @@ function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/auth/me", {
+      async function fetchUser() {
+         try {
+      const res = await fetch("http://localhost:8080/api/auth/me", {
       method: "GET",
       credentials: "include",
     })
-      .then(async (res) => {
+     
         if (!res.ok) {
-          navigate("/login");
+          navigate("/");
         } else {
           const data = await res.json();
           setUser(data.user);
         }
-      })
-      .catch(() => navigate("/login"));
+    
+      
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+  }
+}
+      fetchUser();
   }, []);
 
   const descriptions = {
@@ -70,8 +77,8 @@ function Dashboard() {
       method: "POST",
       credentials: "include",
     })
-      .then(() => navigate("/login"))
-      .catch(() => navigate("/login"));
+      .then(() => navigate("/"))
+      .catch(() => navigate("/"));
   };
 
   const handleAddTask = async (column) => {

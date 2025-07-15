@@ -78,6 +78,7 @@ function LandingPage({ onLogin }) {
       const res = await fetch('http://localhost:8080/user/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           username: usernameLogin,
           password: passwordLogin,
@@ -85,16 +86,16 @@ function LandingPage({ onLogin }) {
       });
 
       const data = await res.json();
-      if (res.ok && data.token) {
+      if (res.ok ) {
         setLoginMessage(`✅ Login erfolgreich! Willkommen, ${data.user.fullname}`);
         setLoginOpen(false);
         setUsernameLogin('');
         setPasswordLogin('');
 
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+      
+        
 
-        onLogin(data.token, data.user);
+        onLogin(data.user);
         navigate('/dashboard');
       } else {
         setLoginMessage('❌ Fehler: ' + (data.message || 'Unbekannter Fehler'));

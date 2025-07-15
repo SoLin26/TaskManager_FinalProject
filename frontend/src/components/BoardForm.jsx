@@ -18,11 +18,7 @@ const BoardForm = ({ onBoardCreated }) => {
       await axios.post(
         "http://localhost:8080/api/boards",
         { title, description },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+         { withCredentials: true }
       );
       setTitle("");
       setDescription("");
