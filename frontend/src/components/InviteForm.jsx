@@ -8,16 +8,11 @@ const InviteForm = ({ boardId, onInviteSuccess }) => {
   const handleInvite = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setMessage("Kein Token gefunden, bitte anmelden");
-        return;
-      }
-
+     
       const res = await axios.post(
         `http://localhost:8080/api/boards/${boardId}/invite`,
         { email },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { withCredentials: true }
       );
 
       setMessage(res.data.message);
