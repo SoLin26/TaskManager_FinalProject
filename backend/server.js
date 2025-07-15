@@ -11,6 +11,7 @@ import boardRoutes from "./routes/boards.js";
 import Member from "./models/Member.js";
 import notificationsRoute from "./routes/notifications.js";
 import searchRoutes from "./routes/search.js";
+import sprintRoutes from "./routes/sprintRoutes.js";
 
 
 dotenv.config();
@@ -35,6 +36,7 @@ app.use("/api/auth", authenticateRoute);
 app.use("/user", authenticateRoute);
 app.use("/api/todos", todoRoutes);
 app.use("/api/boards", boardRoutes);
+app.use("/api/sprints", sprintRoutes);
 
 app.use("/api/search", searchRoutes);
 app.use("/api/boards", boardRoutes);

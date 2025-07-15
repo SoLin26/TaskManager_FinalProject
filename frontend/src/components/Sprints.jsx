@@ -1,23 +1,39 @@
-import React, { useState } from "react";
-import "./Sidebar.css";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./Sidebar.css"; // ou "./Sprints.css" si tu préfères
 
 function Sprints() {
-  const [sprints, setSprints] = useState([
-    { id: 1, title: "📅 Sprint 1: Planung", description: "Planung aller Aufgaben für die Woche." },
-    { id: 2, title: "✅ Sprint 2: Umsetzung", description: "Umsetzung der Kernfunktionen." },
-    { id: 3, title: "🐞 Sprint 3: Bugfixing", description: "Behebung von Bugs & Testing." },
-  ]);
+  const [sprints, setSprints] = useState([]);
 
-  const handleCreateSprint = () => {
+  // Charger tous les Sprints depuis le Backend au démarrage
+  useEffect(() => {
+    const fetchSprints = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/api/sprints");
+        setSprints(res.data);
+      } catch (err) {
+        console.error("Fehler beim Laden der Sprints:", err);
+      }
+    };
+
+    fetchSprints();
+  }, []);
+
+  const handleCreateSprint = async () => {
     const name = prompt("Gib einen Namen für den neuen Sprint ein:");
     if (!name || name.trim() === "") return;
 
-    const newSprint = {
-      id: sprints.length + 1,
-      title: `🆕 ${name}`,
-      description: "Benutzerdefinierter Sprint erstellt.",
-    };
-    setSprints([...sprints, newSprint]);
+    try {
+      const res = await axios.post("http://localhost:8080/api/sprints", {
+        title: `🆕 ${name}`,
+        description: "Benutzerdefinierter Sprint erstellt.",
+      });
+
+      setSprints([...sprints, res.data]);
+    } catch (error) {
+      alert("Fehler beim Speichern");
+      console.error(error);
+    }
   };
 
   const handleShowAll = () => {
@@ -40,7 +56,7 @@ function Sprints() {
 
       <div className="sprint-list">
         {sprints.map((sprint) => (
-          <div key={sprint.id} className="sprint-card">
+          <div key={sprint._id} className="sprint-card">
             <h3>{sprint.title}</h3>
             <p>{sprint.description}</p>
           </div>
@@ -51,4 +67,3 @@ function Sprints() {
 }
 
 export default Sprints;
-
