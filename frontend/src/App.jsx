@@ -28,7 +28,7 @@ import MessagesPage from "./page/MessagesPage";
 import ProfilePage from "./page/ProfilePage";
 import BoardsPage from "./page/BoardsPage";
 import BoardDetail from "./components/BoardDetail";
-
+import Epics from "./components/Epics";
 import "./index.css";
 
 function App() {
@@ -125,7 +125,10 @@ function App() {
   path="/sprints"
   element={<LoggedInLayout><Sprints /></LoggedInLayout>}
 />
-
+<Route
+  path="/epics"
+  element={<LoggedInLayout><Epics /></LoggedInLayout>}
+/>
       {/* Geschützte Routen */}
       {isLoggedIn ? (
         <>
